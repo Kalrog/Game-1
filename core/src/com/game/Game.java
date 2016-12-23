@@ -31,12 +31,16 @@ public class Game extends ApplicationAdapter {
         player = new Player(level.getPlayerSpawn());
         stage = new Stage(viewport, level.getBatch());
         stage.addActor(player);
+        //player.setPosition(8,4);
     }
 
     @Override
     public void render() {
         Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        if(Gdx.graphics.getBufferFormat().coverageSampling)
+            Gdx.gl.glClear(GL20.GL_COVERAGE_BUFFER_BIT_NV);
 
         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
             Gdx.app.exit();

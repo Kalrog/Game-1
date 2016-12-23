@@ -12,6 +12,8 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.game.util.Constants;
 
+import java.util.Iterator;
+
 /**
  * Created by Philipp on 22.12.2016.
  */
@@ -22,19 +24,30 @@ public class Level {
     private TiledMap tiledMap;
     private MapLayers mapLayers;
     private MapLayer mapLayerSpawnPoints;
-
+    private int tileWidth;
+    private int tileHeight;
+    private int mapHeight;
+    private int mapWidth;
 
     public Level() {
         tiledMap = new TmxMapLoader().load("level/level1.tmx");
         mapLayers = tiledMap.getLayers();
         mapLayerSpawnPoints = mapLayers.get(MAP_LAYER_SPAWN_POINTS);
-
+        tileWidth = ((Integer) tiledMap.getProperties().get("tilewidth"));
+        tileHeight = ((Integer) tiledMap.getProperties().get("tileheight"));
+        mapWidth = ((Integer) tiledMap.getProperties().get("width"));
+        mapHeight = ((Integer) tiledMap.getProperties().get("height"));
         mapRenderer = new OrthogonalTiledMapRenderer(tiledMap, Constants.WORLD_SCALE);
     }
 
     public Vector2 getPlayerSpawn() {
         Rectangle rectangle = ((RectangleMapObject) mapLayerSpawnPoints.getObjects().get("playerSpawn")).getRectangle();
-        return new Vector2(rectangle.getCenter(new Vector2()));
+        Vector2 center = new Vector2();
+        center = rectangle.getCenter(center);
+        // devide by tile height to get correct position
+        center.x /= tileWidth;
+        center.y /= tileHeight;
+        return center;
     }
 
     public Batch getBatch() {

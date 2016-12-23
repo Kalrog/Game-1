@@ -29,7 +29,7 @@ public class Player extends Actor {
     public Player(Vector2 spawnPoint) {
         velocity = new Vector2();
         textureAtlasWalking = new TextureAtlas("player/player_walk.atlas");
-        walkAnim = new Animation<TextureAtlas.AtlasRegion>(1 / 15f, textureAtlasWalking.getRegions());
+        walkAnim = new Animation<TextureAtlas.AtlasRegion>(1 / 12f, textureAtlasWalking.getRegions());
         walkAnim.setPlayMode(Animation.PlayMode.LOOP);
 
         textureRegionStanding = new TextureRegion(new Texture("player/p1_stand.png"));
@@ -58,6 +58,9 @@ public class Player extends Actor {
             velocity.x = MAX_VELOCITY;
             state = State.RUNNING;
             facesRight = true;
+        } else {
+            velocity.x = 0;
+            state = State.STANDING;
         }
     }
 

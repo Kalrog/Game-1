@@ -20,6 +20,7 @@ public class DesktopLauncher {
 		//config.fullscreen=true;
 		config.vSyncEnabled = true;
 		config.resizable = false;
+		config.samples = 2;
 		//System.setProperty("org.lwjgl.opengl.Window.undecorated", "true");
 
 		new LwjglApplication(new Game(), config);
