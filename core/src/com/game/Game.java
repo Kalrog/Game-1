@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.game.character.player.Player;
 import com.game.level.Level;
 
 public class Game extends ApplicationAdapter {
@@ -17,11 +18,7 @@ public class Game extends ApplicationAdapter {
     private Stage stage;
     private Level level;
     private OrthographicCamera camera;
-
-    private enum GameState {
-        RUNNING, PAUSED
-    }
-
+    private Player player;
 
     @Override
     public void create() {
@@ -31,7 +28,9 @@ public class Game extends ApplicationAdapter {
         camera.update();
         Viewport viewport = new FillViewport(CAMERA_WIDTH, CAMERA_HEIGHT, camera);
         level = new Level();
+        player = new Player(level.getPlayerSpawn());
         stage = new Stage(viewport, level.getBatch());
+        stage.addActor(player);
     }
 
     @Override
@@ -42,7 +41,14 @@ public class Game extends ApplicationAdapter {
         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
             Gdx.app.exit();
         }
+        if (player.getX() < CAMERA_WIDTH / 2) {
+            camera.position.x = CAMERA_WIDTH / 2;
+        } else {
+            camera.position.x = player.getX();
+        }
+        camera.position.y = player.getY() + CAMERA_HEIGHT * 0.1f;
         camera.update();
+        level.setView(camera);
         switch (gameState) {
             case RUNNING:
                 stage.act();
@@ -74,5 +80,9 @@ public class Game extends ApplicationAdapter {
     public void pause() {
         super.pause();
         gameState = GameState.PAUSED;
+    }
+
+    private enum GameState {
+        RUNNING, PAUSED
     }
 }

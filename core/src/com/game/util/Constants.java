@@ -6,4 +6,5 @@ package com.game.util;
 public class Constants {
 
     public static final float WORLD_SCALE = 1 / 70f;
+    public static final float WORLD_GRAVITY = -1f;
 }

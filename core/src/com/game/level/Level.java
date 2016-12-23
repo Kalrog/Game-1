@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapLayers;
-import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -26,15 +25,15 @@ public class Level {
 
 
     public Level() {
-        tiledMap = new TmxMapLoader().load("level/test.tmx");
+        tiledMap = new TmxMapLoader().load("level/level1.tmx");
         mapLayers = tiledMap.getLayers();
         mapLayerSpawnPoints = mapLayers.get(MAP_LAYER_SPAWN_POINTS);
 
         mapRenderer = new OrthogonalTiledMapRenderer(tiledMap, Constants.WORLD_SCALE);
     }
 
-    private Vector2 getPlayerSpawn(MapObjects mapObjects) {
-        Rectangle rectangle = ((RectangleMapObject) mapObjects.get("playerSpawn")).getRectangle();
+    public Vector2 getPlayerSpawn() {
+        Rectangle rectangle = ((RectangleMapObject) mapLayerSpawnPoints.getObjects().get("playerSpawn")).getRectangle();
         return new Vector2(rectangle.getCenter(new Vector2()));
     }
 
