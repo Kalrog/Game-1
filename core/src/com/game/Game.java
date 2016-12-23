@@ -31,7 +31,7 @@ public class Game extends ApplicationAdapter {
         camera.setToOrtho(false, CAMERA_WIDTH, CAMERA_HEIGHT);
         camera.update();
         Viewport viewport = new FillViewport(CAMERA_WIDTH, CAMERA_HEIGHT, camera);
-        level = new Level();
+        level = new Level(world);
         player = new Player(level.getPlayerSpawn(), world);
         stage = new Stage(viewport, level.getBatch());
         stage.addActor(player);
