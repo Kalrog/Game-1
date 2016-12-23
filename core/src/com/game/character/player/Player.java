@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.game.util.Constants;
 
@@ -25,8 +26,10 @@ public class Player extends Actor {
     private TextureAtlas textureAtlasWalking;
     private TextureRegion textureRegionStanding, textureRegionJumping;
     private float elapsedTime = 0;
+    private BodyDef bodyDef;
+    private Body body;
 
-    public Player(Vector2 spawnPoint) {
+    public Player(Vector2 spawnPoint, World world) {
         velocity = new Vector2();
         textureAtlasWalking = new TextureAtlas("player/player_walk.atlas");
         walkAnim = new Animation<TextureAtlas.AtlasRegion>(1 / 12f, textureAtlasWalking.getRegions());
@@ -37,10 +40,28 @@ public class Player extends Actor {
 
         textureRegionJumping = new TextureRegion(new Texture("player/p1_jump.png"));
         jumpAnim = new Animation<TextureRegion>(0, textureRegionJumping);
-
+        
         setPosition(spawnPoint.x, spawnPoint.y);
         setWidth(textureRegionStanding.getRegionWidth() * Constants.WORLD_SCALE);
         setHeight(textureRegionStanding.getRegionHeight() * Constants.WORLD_SCALE);
+        bodyDef = new BodyDef();
+        bodyDef.type = BodyDef.BodyType.DynamicBody;
+        bodyDef.position.set(getX(), getY());
+        body = world.createBody(bodyDef);
+
+        PolygonShape shape = new PolygonShape();
+        shape.setAsBox(getWidth() / 2, getHeight() / 2);
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.shape = shape;
+        fixtureDef.density = 1f;
+
+        Fixture fixture = body.createFixture(fixtureDef);
+        shape.dispose();
+
+
+
+
+
         state = State.STANDING;
     }
 
@@ -48,6 +69,8 @@ public class Player extends Actor {
     public void act(float delta) {
         super.act(delta);
         elapsedTime += delta;
+
+        setPosition(body.getPosition().x, body.getPosition().y);
 
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
             velocity.x = -MAX_VELOCITY;
@@ -88,5 +111,10 @@ public class Player extends Actor {
 
     private enum State {
         RUNNING, STANDING, JUMPING;
+    }
+
+
+    public BodyDef getBodyDef() {
+        return bodyDef;
     }
 }
