@@ -1,0 +1,82 @@
+
+player_walk.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+p1_walk01
+  rotate: false
+  xy: 1, 1
+  size: 72, 97
+  orig: 72, 97
+  offset: 0, 0
+  index: -1
+p1_walk02
+  rotate: false
+  xy: 75, 1
+  size: 72, 97
+  orig: 72, 97
+  offset: 0, 0
+  index: -1
+p1_walk03
+  rotate: false
+  xy: 149, 1
+  size: 72, 97
+  orig: 72, 97
+  offset: 0, 0
+  index: -1
+p1_walk04
+  rotate: false
+  xy: 223, 1
+  size: 72, 97
+  orig: 72, 97
+  offset: 0, 0
+  index: -1
+p1_walk05
+  rotate: false
+  xy: 297, 1
+  size: 72, 97
+  orig: 72, 97
+  offset: 0, 0
+  index: -1
+p1_walk06
+  rotate: false
+  xy: 371, 1
+  size: 72, 97
+  orig: 72, 97
+  offset: 0, 0
+  index: -1
+p1_walk07
+  rotate: false
+  xy: 445, 1
+  size: 72, 97
+  orig: 72, 97
+  offset: 0, 0
+  index: -1
+p1_walk08
+  rotate: false
+  xy: 519, 1
+  size: 72, 97
+  orig: 72, 97
+  offset: 0, 0
+  index: -1
+p1_walk09
+  rotate: false
+  xy: 593, 1
+  size: 72, 97
+  orig: 72, 97
+  offset: 0, 0
+  index: -1
+p1_walk10
+  rotate: false
+  xy: 667, 1
+  size: 72, 97
+  orig: 72, 97
+  offset: 0, 0
+  index: -1
+p1_walk11
+  rotate: false
+  xy: 741, 1
+  size: 72, 97
+  orig: 72, 97
+  offset: 0, 0
+  index: -1
