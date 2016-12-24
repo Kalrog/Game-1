@@ -18,7 +18,7 @@ import com.game.util.Constants;
  */
 public class Player extends Actor {
 
-    private static final float MAX_VELOCITY = 5f;
+    private static final float MAX_VELOCITY = 100f;
     private Vector2 velocity;
     private boolean facesRight = true;
     private State state;
@@ -47,6 +47,7 @@ public class Player extends Actor {
         setHeight(textureRegionStanding.getRegionHeight() * Constants.WORLD_SCALE);
         bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
+        bodyDef.fixedRotation = true;
         //                  tileWidth       tileHeight
         bodyDef.position.set(getX()*70, getY()*70);
         body = world.createBody(bodyDef);
@@ -73,7 +74,7 @@ public class Player extends Actor {
     public void act(float delta) {
         super.act(delta);
         elapsedTime += delta;
-
+        body.setLinearVelocity(velocity.x,body.getLinearVelocity().y);
         //                               tileWidth                      tileHeight
         setPosition(body.getPosition().x / 70, body.getPosition().y / 70.0f);
 
@@ -81,11 +82,13 @@ public class Player extends Actor {
             velocity.x = -MAX_VELOCITY;
             state = State.RUNNING;
             facesRight = false;
-
         } else if (Gdx.input.isKeyPressed(Input.Keys.D)) {
             velocity.x = MAX_VELOCITY;
             state = State.RUNNING;
             facesRight = true;
+        }else if(Gdx.input.isKeyPressed(Input.Keys.W)){
+            state = State.JUMPING;
+            body.applyForce(0,10000,body.getLocalCenter().x,body.getLocalCenter().y,true);
         } else {
             velocity.x = 0;
             state = State.STANDING;
