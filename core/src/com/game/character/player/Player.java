@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.game.level.Level;
 import com.game.util.Constants;
 
 /**
@@ -46,16 +47,19 @@ public class Player extends Actor {
         setHeight(textureRegionStanding.getRegionHeight() * Constants.WORLD_SCALE);
         bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set(getX(), getY());
+        //                  tileWidth       tileHeight
+        bodyDef.position.set(getX()*70, getY()*70);
         body = world.createBody(bodyDef);
 
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(getWidth() / 2, getHeight() / 2);
+        shape.setAsBox(getWidth()/2, getHeight()/2);
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
         fixtureDef.density = 1f;
 
         Fixture fixture = body.createFixture(fixtureDef);
+        //body.setLinearVelocity(0,5);
+        //body.applyForce(0,5,0.5f,0.5f,true);
         shape.dispose();
 
 
@@ -70,7 +74,8 @@ public class Player extends Actor {
         super.act(delta);
         elapsedTime += delta;
 
-        setPosition(body.getPosition().x, body.getPosition().y);
+        //                               tileWidth                      tileHeight
+        setPosition(body.getPosition().x / 70, body.getPosition().y / 70.0f);
 
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
             velocity.x = -MAX_VELOCITY;
