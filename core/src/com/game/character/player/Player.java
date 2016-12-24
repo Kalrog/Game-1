@@ -47,6 +47,7 @@ public class Player extends Actor {
         setHeight(textureRegionStanding.getRegionHeight() * Constants.WORLD_SCALE);
         bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
+        bodyDef.fixedRotation = true;
         //                  tileWidth       tileHeight
         bodyDef.position.set(getX() * 70, getY() * 70);
         body = world.createBody(bodyDef);
@@ -105,6 +106,12 @@ public class Player extends Actor {
             if (velocity.x < MAX_VELOCITY) {
                 body.applyLinearImpulse(MOVEMENT_IMPULSE, 0, body.getPosition().x, body.getPosition().y, true);
             }
+        }
+
+
+        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+            state = State.JUMPING;
+            body.applyForce(0, 10000, body.getLocalCenter().x, body.getLocalCenter().y, true);
         }
 
 
