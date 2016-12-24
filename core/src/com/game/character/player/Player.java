@@ -52,7 +52,7 @@ public class Player extends Actor {
         body = world.createBody(bodyDef);
 
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(getWidth()/2, getHeight()/2);
+        shape.setAsBox(getWidth(), getHeight());
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
         fixtureDef.density = 1f;

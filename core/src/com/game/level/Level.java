@@ -58,7 +58,7 @@ public class Level {
                      Gdx.app.log("test", "position: " + x + ", " + y);
                     Body body = world.createBody(bodyDef);
                     PolygonShape shape = new PolygonShape();
-                    shape.setAsBox(tileWidth/2, tileHeight/2 );
+                    shape.setAsBox(tileWidth, tileHeight );
                     FixtureDef fixtureDef = new FixtureDef();
                     fixtureDef.shape = shape;
                     fixtureDef.density = 1f;

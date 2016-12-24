@@ -25,7 +25,7 @@ public class Game extends ApplicationAdapter {
 
     @Override
     public void create() {
-        world = new World(new Vector2(0, -.1f), true);
+        world = new World(new Vector2(0, -89f), true);
         gameState = GameState.RUNNING;
         camera = new OrthographicCamera();
         camera.setToOrtho(false, CAMERA_WIDTH, CAMERA_HEIGHT);
