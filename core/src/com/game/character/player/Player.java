@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.game.level.Level;
 import com.game.util.Constants;
 
 /**
@@ -18,7 +17,8 @@ import com.game.util.Constants;
  */
 public class Player extends Actor {
 
-    private static final float MAX_VELOCITY = 5f;
+    private static final float MAX_VELOCITY = 300f;
+    private static final float MOVEMENT_IMPULSE = 100f;
     private Vector2 velocity;
     private boolean facesRight = true;
     private State state;
@@ -41,14 +41,14 @@ public class Player extends Actor {
 
         textureRegionJumping = new TextureRegion(new Texture("player/p1_jump.png"));
         jumpAnim = new Animation<TextureRegion>(0, textureRegionJumping);
-        
+
         setPosition(spawnPoint.x, spawnPoint.y);
         setWidth(textureRegionStanding.getRegionWidth() * Constants.WORLD_SCALE);
         setHeight(textureRegionStanding.getRegionHeight() * Constants.WORLD_SCALE);
         bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         //                  tileWidth       tileHeight
-        bodyDef.position.set(getX()*70, getY()*70);
+        bodyDef.position.set(getX() * 70, getY() * 70);
         body = world.createBody(bodyDef);
 
         PolygonShape shape = new PolygonShape();
@@ -58,12 +58,10 @@ public class Player extends Actor {
         fixtureDef.density = 1f;
 
         Fixture fixture = body.createFixture(fixtureDef);
+        fixture.setFriction(0.2f);
         //body.setLinearVelocity(0,5);
         //body.applyForce(0,5,0.5f,0.5f,true);
         shape.dispose();
-
-
-
 
 
         state = State.STANDING;
@@ -73,23 +71,47 @@ public class Player extends Actor {
     public void act(float delta) {
         super.act(delta);
         elapsedTime += delta;
+        Vector2 velocity = body.getLinearVelocity();
 
-        //                               tileWidth                      tileHeight
-        setPosition(body.getPosition().x / 70, body.getPosition().y / 70.0f);
 
-        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            velocity.x = -MAX_VELOCITY;
-            state = State.RUNNING;
-            facesRight = false;
+        //cap max x velocity
+        if (Math.abs(velocity.x) > MAX_VELOCITY) {
+            velocity.x = Math.signum(velocity.x) * MAX_VELOCITY;
+            body.setLinearVelocity(velocity.x, velocity.y);
+        }
 
-        } else if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            velocity.x = MAX_VELOCITY;
-            state = State.RUNNING;
-            facesRight = true;
+        //apply damping
+        if (!Gdx.input.isKeyPressed(Input.Keys.A) && !Gdx.input.isKeyPressed(Input.Keys.D) && velocity.x != 0) {
+            Gdx.app.log("test", "damp");
+            body.setLinearVelocity(velocity.x * 0.9f, velocity.y);
         } else {
-            velocity.x = 0;
             state = State.STANDING;
         }
+
+        //move left
+        //apply linear impulse if max velocity is not reached yet
+        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+            state = State.RUNNING;
+            facesRight = false;
+            if (velocity.x > -MAX_VELOCITY) {
+                body.applyLinearImpulse(-MOVEMENT_IMPULSE, 0, body.getPosition().x, body.getPosition().y, true);
+            }
+        }
+        //move right
+        //apply linear impulse if max velocity is not reached yet
+        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+            state = State.RUNNING;
+            facesRight = true;
+            if (velocity.x < MAX_VELOCITY) {
+                body.applyLinearImpulse(MOVEMENT_IMPULSE, 0, body.getPosition().x, body.getPosition().y, true);
+            }
+        }
+
+
+        //                               tileWidth                      tileHeight
+        setPosition(body.getPosition().x / 70.0f, body.getPosition().y / 70.0f);
+        Gdx.app.log("test", "vel x: " + body.getLinearVelocity().x + "x: " + getX() + " y: " + getY());
+
     }
 
     @Override
@@ -114,12 +136,12 @@ public class Player extends Actor {
         }
     }
 
-    private enum State {
-        RUNNING, STANDING, JUMPING;
+    public BodyDef getBodyDef() {
+        return bodyDef;
     }
 
 
-    public BodyDef getBodyDef() {
-        return bodyDef;
+    private enum State {
+        RUNNING, STANDING, JUMPING;
     }
 }
