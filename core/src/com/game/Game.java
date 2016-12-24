@@ -14,9 +14,10 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.game.character.player.Player;
 import com.game.level.Level;
 
+import static com.game.util.Constants.*;
+
 public class Game extends ApplicationAdapter {
-    private static final int CAMERA_WIDTH = 30;
-    private static final int CAMERA_HEIGHT = 20;
+
     private GameState gameState;
     private Stage stage;
     private Level level;
@@ -27,7 +28,7 @@ public class Game extends ApplicationAdapter {
 
     @Override
     public void create() {
-        world = new World(new Vector2(0, -130f), true);
+        world = new World(new Vector2(0, WORLD_GRAVITY), true);
         gameState = GameState.RUNNING;
         camera = new OrthographicCamera();
         camera.setToOrtho(false, CAMERA_WIDTH, CAMERA_HEIGHT);
@@ -62,7 +63,7 @@ public class Game extends ApplicationAdapter {
         camera.position.y = player.getY() + CAMERA_HEIGHT * 0.1f;
         camera.update();
         level.setView(camera);
-        debugRenderer.render(world, camera.projection.scl(1/70f,1/70f,1f).translate(-15 * 70 , 0 ,0));
+        debugRenderer.render(world, camera.projection.scl(WORLD_SCALE,WORLD_SCALE,1f).translate(-15 * 70 , 0 ,0));
 
         switch (gameState) {
             case RUNNING:

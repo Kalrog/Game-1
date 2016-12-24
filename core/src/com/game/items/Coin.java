@@ -11,6 +11,8 @@ import com.game.util.Constants;
  */
 public class Coin extends Actor {
 
+    private static final String TILED_ITEM_ID = "coin_gold";
+
     private Texture texture;
     private Animation<Texture> animation;
 
