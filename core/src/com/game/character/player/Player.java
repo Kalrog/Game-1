@@ -18,7 +18,7 @@ import com.game.util.Constants;
 public class Player extends Actor {
 
     private static final float MAX_VELOCITY = 300f;
-    private static final float MOVEMENT_IMPULSE = 100f;
+    private static final float MOVEMENT_IMPULSE = 1000f;
     private Vector2 velocity;
     private boolean facesRight = true;
     private State state;
@@ -42,24 +42,26 @@ public class Player extends Actor {
         textureRegionJumping = new TextureRegion(new Texture("player/p1_jump.png"));
         jumpAnim = new Animation<TextureRegion>(0, textureRegionJumping);
 
-        setPosition(spawnPoint.x, spawnPoint.y);
+        //setPosition(spawnPoint.x, spawnPoint.y);
         setWidth(textureRegionStanding.getRegionWidth() * Constants.WORLD_SCALE);
         setHeight(textureRegionStanding.getRegionHeight() * Constants.WORLD_SCALE);
         bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
+
         bodyDef.fixedRotation = true;
         //                  tileWidth       tileHeight
-        bodyDef.position.set(getX() * 70, getY() * 70);
+        bodyDef.position.set(spawnPoint.x * 70, spawnPoint.y * 70);
         body = world.createBody(bodyDef);
 
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(getWidth(), getHeight());
+        shape.setAsBox(getWidth() * 70 / 2, getHeight() * 70 / 2);
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
         fixtureDef.density = 1f;
 
         Fixture fixture = body.createFixture(fixtureDef);
-        fixture.setFriction(0.2f);
+        fixture.setFriction(0f);
+
         //body.setLinearVelocity(0,5);
         //body.applyForce(0,5,0.5f,0.5f,true);
         shape.dispose();
@@ -83,7 +85,7 @@ public class Player extends Actor {
 
         //apply damping
         if (!Gdx.input.isKeyPressed(Input.Keys.A) && !Gdx.input.isKeyPressed(Input.Keys.D) && velocity.x != 0) {
-            Gdx.app.log("test", "damp");
+            //      Gdx.app.log("test", "damp");
             body.setLinearVelocity(velocity.x * 0.9f, velocity.y);
         } else {
             state = State.STANDING;
@@ -113,11 +115,8 @@ public class Player extends Actor {
             state = State.JUMPING;
             body.applyForce(0, 10000, body.getLocalCenter().x, body.getLocalCenter().y, true);
         }
-
-
-        //                               tileWidth                      tileHeight
-        setPosition(body.getPosition().x / 70.0f, body.getPosition().y / 70.0f);
         Gdx.app.log("test", "vel x: " + body.getLinearVelocity().x + "x: " + getX() + " y: " + getY());
+        setPosition(body.getPosition().x * Constants.WORLD_SCALE - getWidth() / 2, body.getPosition().y * Constants.WORLD_SCALE - getHeight() / 2);
 
     }
 
