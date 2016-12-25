@@ -13,9 +13,14 @@ public class Constants {
 
 
     //Collision filter category bits
-    public static final short CATEGORY_BIT_NOTHIG = 0;
+    public static final short CATEGORY_BIT_NOTHING = 0;
     public static final short CATEGORY_BIT_TERRAIN = 1;
     public static final short CATEGORY_BIT_PLAYER = 2;
     public static final short CATEGORY_BIT_COIN = 4;
     public static final short CATEGORY_BIT_PLAYER_FOOT = 8;
+
+    public static final String CONTACT_USERDATA_PLAYER = "player";
+    public static final String CONTACT_USERDATA_PLAYER_FOOT = "foot";
+    public static final String CONTACT_USERDATA_COIN = "coin";
+    public static final String CONTACT_USERDATA_TERRAIN = "terrain";
 }
