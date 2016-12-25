@@ -127,6 +127,7 @@ public class Player extends Actor implements ContactListener {
         Gdx.app.log("test", "x: " + position.y);
         bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
+        bodyDef.linearDamping = 0.1f;
         bodyDef.position.set(position.x / PIXEL_PER_METER, position.y / PIXEL_PER_METER);
         body = world.createBody(bodyDef);
         body.setFixedRotation(true);
