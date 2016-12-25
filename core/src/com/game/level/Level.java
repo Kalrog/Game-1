@@ -1,6 +1,5 @@
 package com.game.level;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.maps.MapLayer;
@@ -13,6 +12,8 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+
+import static com.game.util.Constants.PIXEL_PER_METER;
 
 /**
  * Created by Philipp on 22.12.2016.
@@ -41,25 +42,22 @@ public class Level {
         tileHeight = ((Integer) tiledMap.getProperties().get("tileheight"));
         mapWidth = ((Integer) tiledMap.getProperties().get("width"));
         mapHeight = ((Integer) tiledMap.getProperties().get("height"));
-        mapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
+        mapRenderer = new OrthogonalTiledMapRenderer(tiledMap, 1 / PIXEL_PER_METER);
 
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.StaticBody;
         for (MapObject mapObject : mapLayerTerrainBodies.getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rectangle = ((RectangleMapObject) mapObject).getRectangle();
 
-            bodyDef.position.set(rectangle.getX() + rectangle.getWidth() / 2, rectangle.getY() + rectangle.getHeight() / 2);
+            bodyDef.position.set((rectangle.getX() + rectangle.getWidth() / 2) / PIXEL_PER_METER, (rectangle.getY() + rectangle.getHeight() / 2) / PIXEL_PER_METER);
             Body body = world.createBody(bodyDef);
             PolygonShape shape = new PolygonShape();
-            shape.setAsBox(rectangle.getWidth() / 2, rectangle.getHeight() / 2);
-            Gdx.app.log("test", "object");
+            shape.setAsBox(rectangle.getWidth() / 2 / PIXEL_PER_METER, rectangle.getHeight() / 2 / PIXEL_PER_METER);
             FixtureDef fixtureDef = new FixtureDef();
-            Gdx.app.log("test", "object");
             fixtureDef.shape = shape;
             fixtureDef.density = 1f;
 
             Fixture fixture = body.createFixture(fixtureDef);
-            fixture.setFriction(0f);
             shape.dispose();
         }
     }
