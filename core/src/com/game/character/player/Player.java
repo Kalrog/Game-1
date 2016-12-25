@@ -12,6 +12,8 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.game.util.Constants;
 
+import static com.game.util.Constants.CONTACT_USERDATA_PLAYER;
+import static com.game.util.Constants.CONTACT_USERDATA_PLAYER_FOOT;
 import static com.game.util.Constants.PIXEL_PER_METER;
 
 /**
@@ -138,33 +140,35 @@ public class Player extends Actor implements ContactListener {
         fixtureDef.filter.maskBits = Constants.CATEGORY_BIT_TERRAIN |
                 Constants.CATEGORY_BIT_COIN;
         //
-        body.createFixture(fixtureDef);
-        shape.dispose();
-
-        PolygonShape polygonShape = new PolygonShape();
-        polygonShape.setAsBox(getWidth() / 2, getHeight() / 5);
-        EdgeShape edgeShape = new EdgeShape();
-        edgeShape.set(new Vector2(-10 / PIXEL_PER_METER, 50 / PIXEL_PER_METER), new Vector2(10 / PIXEL_PER_METER, 20 / PIXEL_PER_METER));
-
-        fixtureDef.isSensor = true;
-        fixtureDef.shape = edgeShape;
+        body.createFixture(fixtureDef).setUserData(CONTACT_USERDATA_PLAYER);
+        shape.setAsBox(getWidth() / 2 * 0.8f, 0.1f, new Vector2(0, -0.9f), 0);
+        fixtureDef.shape = shape;
         fixtureDef.density = 0;
-        fixtureDef.filter.categoryBits = Constants.CATEGORY_BIT_PLAYER_FOOT;
-        //  body.createFixture(fixtureDef);
-        polygonShape.dispose();
+        fixtureDef.isSensor = true;
+        fixtureDef.filter.categoryBits = Constants.CATEGORY_BIT_PLAYER;
+        fixtureDef.filter.maskBits = Constants.CATEGORY_BIT_TERRAIN;
+        body.createFixture(fixtureDef).setUserData(CONTACT_USERDATA_PLAYER_FOOT);
+        shape.dispose();
 
     }
 
     @Override
     public void beginContact(Contact contact) {
-        Gdx.app.log("test", "beginContact");
-        isGrounded = true;
+        if ((contact.getFixtureA().getUserData() != null && contact.getFixtureA().getUserData().equals(CONTACT_USERDATA_PLAYER_FOOT))
+                || (contact.getFixtureB().getUserData() != null && contact.getFixtureB().getUserData().equals(CONTACT_USERDATA_PLAYER_FOOT))) {
+            Gdx.app.log("test", "beginContact");
+            isGrounded = true;
+        }
     }
 
     @Override
     public void endContact(Contact contact) {
-        Gdx.app.log("test", "endContact");
-        isGrounded = false;
+        if ((contact.getFixtureA().getUserData() != null && contact.getFixtureA().getUserData().equals(CONTACT_USERDATA_PLAYER_FOOT))
+                || (contact.getFixtureB().getUserData() != null && contact.getFixtureB().getUserData().equals(CONTACT_USERDATA_PLAYER_FOOT))) {
+
+            Gdx.app.log("test", "endContact " + contact.isTouching());
+            isGrounded = false;
+        }
 
     }
 
