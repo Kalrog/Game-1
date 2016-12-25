@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.game.util.Constants;
 
 /**
  * Created by Philipp on 22.12.2016.
@@ -31,6 +30,8 @@ public class Player extends Actor {
     private Body body;
 
     public Player(Vector2 spawnPoint, World world) {
+
+        Gdx.app.log("test", "x: " + spawnPoint.x);
         velocity = new Vector2();
         textureAtlasWalking = new TextureAtlas("player/player_walk.atlas");
         walkAnim = new Animation<TextureAtlas.AtlasRegion>(1 / 12f, textureAtlasWalking.getRegions());
@@ -43,18 +44,18 @@ public class Player extends Actor {
         jumpAnim = new Animation<TextureRegion>(0, textureRegionJumping);
 
         //setPosition(spawnPoint.x, spawnPoint.y);
-        setWidth(textureRegionStanding.getRegionWidth() * Constants.WORLD_SCALE);
-        setHeight(textureRegionStanding.getRegionHeight() * Constants.WORLD_SCALE);
+        setWidth(textureRegionStanding.getRegionWidth());
+        setHeight(textureRegionStanding.getRegionHeight());
         bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
 
         bodyDef.fixedRotation = true;
         //                  tileWidth       tileHeight
-        bodyDef.position.set(spawnPoint.x * 70, spawnPoint.y * 70);
+        bodyDef.position.set(spawnPoint.x, spawnPoint.y);
         body = world.createBody(bodyDef);
 
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(getWidth() * 70 / 2, getHeight() * 70 / 2);
+        shape.setAsBox(getWidth() / 2, getHeight() / 2);
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
         fixtureDef.density = 1f;
@@ -115,8 +116,8 @@ public class Player extends Actor {
             state = State.JUMPING;
             body.applyForce(0, 10000, body.getLocalCenter().x, body.getLocalCenter().y, true);
         }
-        Gdx.app.log("test", "vel x: " + body.getLinearVelocity().x + "x: " + getX() + " y: " + getY());
-        setPosition(body.getPosition().x * Constants.WORLD_SCALE - getWidth() / 2, body.getPosition().y * Constants.WORLD_SCALE - getHeight() / 2);
+        // Gdx.app.log("test", "vel x: " + body.getLinearVelocity().x + "x: " + getX() + " y: " + getY());
+        setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 2);
 
     }
 

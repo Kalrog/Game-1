@@ -13,7 +13,6 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
-import com.game.util.Constants;
 
 /**
  * Created by Philipp on 22.12.2016.
@@ -42,7 +41,7 @@ public class Level {
         tileHeight = ((Integer) tiledMap.getProperties().get("tileheight"));
         mapWidth = ((Integer) tiledMap.getProperties().get("width"));
         mapHeight = ((Integer) tiledMap.getProperties().get("height"));
-        mapRenderer = new OrthogonalTiledMapRenderer(tiledMap, Constants.WORLD_SCALE);
+        mapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
 
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.StaticBody;
@@ -63,25 +62,6 @@ public class Level {
             fixture.setFriction(0f);
             shape.dispose();
         }
-
- /*       for (int x = 0; x <= mapWidth; x++) {
-            for (int y = 0; y <= mapHeight; y++) {
-                TiledMapTileLayer.Cell cell = mapLayerTerrain.getCell(x, y);
-                if (cell != null) {
-                    bodyDef.position.set(x * tileWidth, y * tileHeight);
-                    Gdx.app.log("test", "position: " + x + ", " + y);
-                    Body body = world.createBody(bodyDef);
-                    PolygonShape shape = new PolygonShape();
-                    shape.setAsBox(tileWidth, tileHeight);
-                    FixtureDef fixtureDef = new FixtureDef();
-                    fixtureDef.shape = shape;
-                    fixtureDef.density = 1f;
-
-                    Fixture fixture = body.createFixture(fixtureDef);
-                    shape.dispose();
-                }
-            }
-        }*/
     }
 
 
@@ -89,9 +69,6 @@ public class Level {
         Rectangle rectangle = ((RectangleMapObject) mapLayerSpawnPoints.getObjects().get("playerSpawn")).getRectangle();
         Vector2 center = new Vector2();
         center = rectangle.getCenter(center);
-        // devide by tile height to get correct position
-        center.x /= tileWidth;
-        center.y /= tileHeight;
         return center;
     }
 

@@ -112,6 +112,7 @@
   <object id="15" x="2450" y="1890" width="420" height="70"/>
  </objectgroup>
  <objectgroup name="spawnPoints">
-  <object id="3" name="playerSpawn" x="632.826" y="1976.31"/>
+  <object id="3" name="playerSpawn" x="700" y="1960"/>
  </objectgroup>
+ <objectgroup name="coins" visible="0"/>
 </map>

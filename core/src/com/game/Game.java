@@ -63,7 +63,7 @@ public class Game extends ApplicationAdapter {
         camera.position.y = player.getY() + CAMERA_HEIGHT * 0.1f;
         camera.update();
         level.setView(camera);
-        debugRenderer.render(world, camera.combined.scl(WORLD_SCALE));
+        debugRenderer.render(world, camera.combined);
 
         switch (gameState) {
             case RUNNING:

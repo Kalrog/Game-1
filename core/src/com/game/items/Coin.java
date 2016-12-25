@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.game.util.Constants;
 
 /**
  * Created by Philipp on 24.12.2016.
@@ -20,8 +19,8 @@ public class Coin extends Actor {
         setPosition(x, y);
 
         texture = new Texture("assets/items/coinGold.png");
-        setWidth(texture.getWidth() * Constants.WORLD_SCALE);
-        setHeight(texture.getHeight() * Constants.WORLD_SCALE);
+        setWidth(texture.getWidth());
+        setHeight(texture.getHeight());
         animation = new Animation<Texture>(0, texture);
     }
 
