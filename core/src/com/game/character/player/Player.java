@@ -21,7 +21,6 @@ import static com.game.util.Constants.PIXEL_PER_METER;
 public class Player extends Actor {
 
     private static final float MAX_VELOCITY = 2f;
-    private static final float MOVEMENT_IMPULSE = 0.3f;
     private static final float JUMP_IMPULSE = 700f;
     private Vector2 velocity;
     private boolean facesRight = true;
@@ -126,10 +125,11 @@ public class Player extends Actor {
         Gdx.app.log("test", "x: " + position.y);
         bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
-        bodyDef.linearDamping = 0.1f;
+        bodyDef.linearDamping = 2f;
         bodyDef.position.set(position.x / PIXEL_PER_METER, position.y / PIXEL_PER_METER);
         body = world.createBody(bodyDef);
         body.setFixedRotation(true);
+
 
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(getWidth() / 2, getHeight() / 2);
