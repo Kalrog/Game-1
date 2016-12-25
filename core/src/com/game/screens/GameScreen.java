@@ -13,6 +13,7 @@ import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.game.character.player.Player;
 import com.game.level.Level;
+import com.game.physics.ContactHandler;
 
 import static com.game.util.Constants.*;
 
@@ -38,6 +39,7 @@ public class GameScreen implements Screen {
         stage = new Stage(viewport, level.getBatch());
         level.createCoins(stage);
         stage.addActor(player);
+        world.setContactListener(ContactHandler.getInstance());
         debugRenderer = new Box2DDebugRenderer();
     }
 
