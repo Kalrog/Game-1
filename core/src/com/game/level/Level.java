@@ -17,6 +17,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.game.items.Coin;
+import com.game.physics.ContactUnit;
 import com.game.util.Constants;
 
 import static com.game.util.Constants.PIXEL_PER_METER;
@@ -70,6 +71,8 @@ public class Level {
             fixtureDef.filter.maskBits = Constants.CATEGORY_BIT_PLAYER;
 
             Fixture fixture = body.createFixture(fixtureDef);
+            fixture.setUserData(new ContactUnit(ContactUnit.TERRAIN,this));
+
             shape.dispose();
         }
         for(MapObject mapObject : mapLayers.get(MAP_LAYER_TERRAIN_BODIES).getObjects().getByType(PolygonMapObject.class)){
@@ -96,6 +99,8 @@ public class Level {
             fixtureDef.filter.maskBits = Constants.CATEGORY_BIT_PLAYER;
 
             Fixture fixture = body.createFixture(fixtureDef);
+            fixture.setUserData(new ContactUnit(ContactUnit.TERRAIN,this));
+
             shape.dispose();
         }
     }
@@ -115,8 +120,11 @@ public class Level {
             fixtureDef.density = 1f;
             fixtureDef.filter.categoryBits = Constants.CATEGORY_BIT_COIN;
             Fixture fixture = body.createFixture(fixtureDef);
+            Coin coin;
+            stage.addActor(coin = new Coin(body.getPosition().x - rectangle.getWidth() / 2 / PIXEL_PER_METER, body.getPosition().y - rectangle.getHeight() / 2 / PIXEL_PER_METER, rectangle.getWidth() / PIXEL_PER_METER, rectangle.getHeight() / PIXEL_PER_METER));
+            fixture.setUserData(new ContactUnit(ContactUnit.COIN,coin));
             shape.dispose();
-            stage.addActor(new Coin(body.getPosition().x - rectangle.getWidth() / 2 / PIXEL_PER_METER, body.getPosition().y - rectangle.getHeight() / 2 / PIXEL_PER_METER, rectangle.getWidth() / PIXEL_PER_METER, rectangle.getHeight() / PIXEL_PER_METER));
+
         }
     }
 
