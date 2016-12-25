@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
+import static com.game.util.Constants.PIXEL_PER_METER;
+
 /**
  * Created by Philipp on 24.12.2016.
  */
@@ -15,12 +17,12 @@ public class Coin extends Actor {
     private Texture texture;
     private Animation<Texture> animation;
 
-    public Coin(float x, float y) {
+    public Coin(float x, float y, float width, float height) {
         setPosition(x, y);
 
-        texture = new Texture("assets/items/coinGold.png");
-        setWidth(texture.getWidth());
-        setHeight(texture.getHeight());
+        texture = new Texture("items/coinGold.png");
+        setWidth(width);
+        setHeight(height);
         animation = new Animation<Texture>(0, texture);
     }
 

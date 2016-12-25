@@ -10,4 +10,12 @@ public class Constants {
 
     public static final float CAMERA_WIDTH = 30;
     public static final float CAMERA_HEIGHT = CAMERA_WIDTH * 9 / 16;
+
+
+    //Collision filter category bits
+    public static final short CATEGORY_BIT_NOTHIG = 0;
+    public static final short CATEGORY_BIT_TERRAIN = 1;
+    public static final short CATEGORY_BIT_PLAYER = 2;
+    public static final short CATEGORY_BIT_COIN = 4;
+    public static final short CATEGORY_BIT_PLAYER_FOOT = 8;
 }

@@ -36,6 +36,7 @@ public class GameScreen implements Screen {
         level = new Level(world);
         player = new Player(level.getPlayerSpawn(), world);
         stage = new Stage(viewport, level.getBatch());
+        level.createCoins(stage);
         stage.addActor(player);
         debugRenderer = new Box2DDebugRenderer();
     }
@@ -44,7 +45,7 @@ public class GameScreen implements Screen {
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        world.step(Gdx.graphics.getDeltaTime(), 6, 2);
+        world.step(1 / 30f, 6, 2);
         world.clearForces();
 
         if (Gdx.graphics.getBufferFormat().coverageSampling)

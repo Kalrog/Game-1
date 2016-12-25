@@ -10,17 +10,18 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.game.util.Constants;
 
 import static com.game.util.Constants.PIXEL_PER_METER;
 
 /**
  * Created by Philipp on 22.12.2016.
  */
-public class Player extends Actor {
+public class Player extends Actor implements ContactListener {
 
     private static final float MAX_VELOCITY = 2f;
     private static final float MOVEMENT_IMPULSE = 0.3f;
-    private static final float JUMP_IMPULSE = 500f;
+    private static final float JUMP_IMPULSE = 700f;
     private Vector2 velocity;
     private boolean facesRight = true;
     private State state;
@@ -30,9 +31,11 @@ public class Player extends Actor {
     private BodyDef bodyDef;
     private Body body;
     private World world;
+    private boolean isGrounded = false;
 
     public Player(Vector2 spawnPoint, World world) {
         this.world = world;
+        world.setContactListener(this);
         velocity = new Vector2();
         TextureAtlas textureAtlasWalking = new TextureAtlas("player/player_walk.atlas");
         walkAnim = new Animation<TextureAtlas.AtlasRegion>(1 / 12f, textureAtlasWalking.getRegions());
@@ -84,30 +87,37 @@ public class Player extends Actor {
 
     private void handleInput() {
         //jump
-        if (Gdx.input.isKeyJustPressed(Input.Keys.W)) {
-            state = State.JUMPING;
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && isGrounded) {
             body.applyForce(0, JUMP_IMPULSE, body.getLocalCenter().x, body.getLocalCenter().y, true);
         }
-
         //move left
         //apply linear impulse if max velocity is not reached yet
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            state = State.RUNNING;
-            facesRight = false;
             if (velocity.x > -MAX_VELOCITY) {
+                facesRight = false;
                 body.applyLinearImpulse(new Vector2(-MOVEMENT_IMPULSE, 0), body.getWorldCenter(), true);
-                //   body.applyLinearImpulse(-MOVEMENT_IMPULSE, 0, body.getPosition().x, body.getPosition().y, true);
             }
         }
 
         //move right
         //apply linear impulse if max velocity is not reached yet
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            state = State.RUNNING;
-            facesRight = true;
             if (velocity.x < MAX_VELOCITY) {
+                facesRight = true;
                 body.applyLinearImpulse(MOVEMENT_IMPULSE, 0, body.getPosition().x, body.getPosition().y, true);
             }
+        }
+        handleState();
+    }
+
+    private void handleState() {
+        if (body.getLinearVelocity().x != 0) {
+            state = State.RUNNING;
+        } else {
+            state = State.STANDING;
+        }
+        if (!isGrounded) {
+            state = State.JUMPING;
         }
     }
 
@@ -115,7 +125,6 @@ public class Player extends Actor {
         Gdx.app.log("test", "x: " + position.y);
         bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
-
         bodyDef.position.set(position.x / PIXEL_PER_METER, position.y / PIXEL_PER_METER);
         body = world.createBody(bodyDef);
         body.setFixedRotation(true);
@@ -125,9 +134,48 @@ public class Player extends Actor {
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
         fixtureDef.density = 1f;
-
-        Fixture fixture = body.createFixture(fixtureDef);
+        fixtureDef.filter.categoryBits = Constants.CATEGORY_BIT_PLAYER;
+        fixtureDef.filter.maskBits = Constants.CATEGORY_BIT_TERRAIN |
+                Constants.CATEGORY_BIT_COIN;
+        //
+        body.createFixture(fixtureDef);
         shape.dispose();
+
+        PolygonShape polygonShape = new PolygonShape();
+        polygonShape.setAsBox(getWidth() / 2, getHeight() / 5);
+        EdgeShape edgeShape = new EdgeShape();
+        edgeShape.set(new Vector2(-10 / PIXEL_PER_METER, 50 / PIXEL_PER_METER), new Vector2(10 / PIXEL_PER_METER, 20 / PIXEL_PER_METER));
+
+        fixtureDef.isSensor = true;
+        fixtureDef.shape = edgeShape;
+        fixtureDef.density = 0;
+        fixtureDef.filter.categoryBits = Constants.CATEGORY_BIT_PLAYER_FOOT;
+        //  body.createFixture(fixtureDef);
+        polygonShape.dispose();
+
+    }
+
+    @Override
+    public void beginContact(Contact contact) {
+        Gdx.app.log("test", "beginContact");
+        isGrounded = true;
+    }
+
+    @Override
+    public void endContact(Contact contact) {
+        Gdx.app.log("test", "endContact");
+        isGrounded = false;
+
+    }
+
+    @Override
+    public void preSolve(Contact contact, Manifold oldManifold) {
+
+    }
+
+    @Override
+    public void postSolve(Contact contact, ContactImpulse impulse) {
+
     }
 
     public BodyDef getBodyDef() {
