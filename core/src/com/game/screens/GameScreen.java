@@ -38,6 +38,7 @@ public class GameScreen implements Screen {
         stage = new Stage(viewport, level.getBatch());
         level.createCoins(stage);
         stage.addActor(player);
+       new GameOverScreen();
         debugRenderer = new Box2DDebugRenderer();
     }
 
@@ -59,12 +60,13 @@ public class GameScreen implements Screen {
         } else {
             camera.position.x = player.getX();
         }
-        camera.position.y = player.getY() + CAMERA_HEIGHT * 0.1f;
+        camera.position.y = player.getY() + 4.5f;
         camera.update();
         level.setView(camera);
         debugRenderer.render(world, camera.combined);
         stage.act();
         stage.draw();
+
     }
 
     @Override
