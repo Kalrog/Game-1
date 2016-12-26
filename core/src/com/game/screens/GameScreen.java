@@ -57,6 +57,7 @@ public class GameScreen implements Screen {
         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
             Gdx.app.exit();
         }
+
         if (player.getX() < CAMERA_WIDTH / 2) {
             camera.position.x = CAMERA_WIDTH / 2;
         } else {
@@ -65,7 +66,7 @@ public class GameScreen implements Screen {
         camera.position.y = player.getY() + 4.5f;
         camera.update();
         level.setView(camera);
-        debugRenderer.render(world, camera.combined);
+        //debugRenderer.render(world, camera.combined);
         stage.act();
         stage.draw();
 

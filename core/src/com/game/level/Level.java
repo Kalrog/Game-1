@@ -1,5 +1,6 @@
 package com.game.level;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.maps.MapLayers;
@@ -58,7 +59,7 @@ public class Level {
             Rectangle rectangle = ((RectangleMapObject) mapObject).getRectangle();
 
             bodyDef.position.set((rectangle.getX() + rectangle.getWidth() / 2) / PIXEL_PER_METER, (rectangle.getY() + rectangle.getHeight() / 2) / PIXEL_PER_METER);
-            //Gdx.app.log("Level: Rectangle"," X : " + bodyDef.position.x +" Y : " + bodyDef.position.y);
+            Gdx.app.log("Level: Rectangle"," X : " + bodyDef.position.x +" Y : " + bodyDef.position.y);
             Body body = world.createBody(bodyDef);
             PolygonShape shape = new PolygonShape();
             shape.setAsBox(rectangle.getWidth() / 2 / PIXEL_PER_METER, rectangle.getHeight() / 2 / PIXEL_PER_METER);

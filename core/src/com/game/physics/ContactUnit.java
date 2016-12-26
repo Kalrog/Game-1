@@ -2,6 +2,7 @@ package com.game.physics;
 
 /**
  * Created by jonathan on 25.12.16.
+ * This Class should always be used as fixture data
  */
 
 
@@ -15,6 +16,11 @@ public class ContactUnit {
     private int id;
     private Object data;
 
+    /**
+     * Creates a new ContactUnit to be used as fixture data
+     * @param id this parameter is used to recognize the type of fixture involved in the contact
+     * @param data this parameter should be the game object that this ContactUnit represents
+     */
     public ContactUnit(int id,Object data){
         this.id = id;
         this.data = data;

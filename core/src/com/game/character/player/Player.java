@@ -81,9 +81,9 @@ public class Player extends Actor {
                 break;
         }
         if (facesRight) {
-            batch.draw(frame, getX(), getY(), getWidth(), getHeight());
+            batch.draw(frame, getX(), getY(), frame.getRegionWidth() / PIXEL_PER_METER, frame.getRegionHeight()/PIXEL_PER_METER);
         } else {
-            batch.draw(frame, getX() + getWidth(), getY(), -getWidth(), getHeight());
+            batch.draw(frame, getX() + frame.getRegionWidth()/PIXEL_PER_METER, getY(), -frame.getRegionWidth() / PIXEL_PER_METER, frame.getRegionHeight()/PIXEL_PER_METER);
         }
     }
 
@@ -129,7 +129,7 @@ public class Player extends Actor {
     }
 
     private void createBody(Vector2 position) {
-        Gdx.app.log("test", "x: " + position.y);
+        Gdx.app.log("test", "x: " + position.x);
         bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.linearDamping = 2f;
@@ -138,7 +138,7 @@ public class Player extends Actor {
         body = world.createBody(bodyDef);
         body.setFixedRotation(true);
 
-
+        // Main Player Fixture
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(getWidth() / 2, getHeight() / 2);
         FixtureDef fixtureDef = new FixtureDef();
@@ -147,16 +147,16 @@ public class Player extends Actor {
         fixtureDef.filter.categoryBits = Constants.CATEGORY_BIT_PLAYER;
         fixtureDef.filter.maskBits = Constants.CATEGORY_BIT_TERRAIN |
                 Constants.CATEGORY_BIT_COIN;
-        //
         body.createFixture(fixtureDef).setUserData(new ContactUnit(ContactUnit.PLAYER,this));
 
-        shape.setAsBox(getWidth() / 2 * 0.8f, 0.1f, new Vector2(0, -0.9f), 0);
+        // Player Foot Fixture
+        shape.setAsBox(getWidth() / 2 * 0.9f, 0.1f, new Vector2(0, -0.9f), 0);
         fixtureDef.shape = shape;
         fixtureDef.density = 0;
         fixtureDef.isSensor = true;
-        fixtureDef.filter.categoryBits = Constants.CATEGORY_BIT_PLAYER;
+        fixtureDef.filter.categoryBits = Constants.CATEGORY_BIT_PLAYER ;
         fixtureDef.filter.maskBits = Constants.CATEGORY_BIT_TERRAIN | Constants.CATEGORY_BIT_COIN;
-        body.createFixture(fixtureDef).setUserData(new ContactUnit(ContactUnit.PLAYER_FOOT,this));
+        body.createFixture(fixtureDef).setUserData(new ContactUnit(ContactUnit.PLAYER_FOOT | ContactUnit.PLAYER,this));
         shape.dispose();
 
     }
