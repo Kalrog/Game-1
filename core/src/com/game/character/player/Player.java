@@ -22,7 +22,7 @@ public class Player extends Actor {
 
     private static final float MAX_VELOCITY = 2f;
     private static final float MOVEMENT_IMPULSE = 0.9f;
-    private static final float JUMP_IMPULSE = 700f;
+    private static final float JUMP_IMPULSE = 900f;
     private Vector2 velocity;
     private boolean facesRight = true;
     private State state;
@@ -33,6 +33,7 @@ public class Player extends Actor {
     private Body body;
     private World world;
     private boolean isGrounded = false;
+    private boolean doubleJump = true;
     private int groundContacts = 0;
 
     public Player(Vector2 spawnPoint, World world) {
@@ -90,6 +91,11 @@ public class Player extends Actor {
         //jump
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && isGrounded) {
             body.applyForce(0, JUMP_IMPULSE, body.getLocalCenter().x, body.getLocalCenter().y, true);
+        }
+        // double jump
+        else if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && doubleJump){
+            body.applyForce(0, JUMP_IMPULSE, body.getLocalCenter().x, body.getLocalCenter().y, true);
+            doubleJump = false;
         }
         //move left
         //apply linear impulse if max velocity is not reached yet
@@ -158,6 +164,7 @@ public class Player extends Actor {
     public void changeGroundContact(int change){
         groundContacts += change;
         isGrounded = groundContacts != 0;
+        doubleJump = true;
     }
 
     public BodyDef getBodyDef() {

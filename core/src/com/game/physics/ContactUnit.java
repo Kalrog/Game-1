@@ -8,8 +8,9 @@ package com.game.physics;
 public class ContactUnit {
     public static final int PLAYER = 1;
     public static final int PLAYER_FOOT = 2;
-    public static final int COIN = 3;
-    public static final int TERRAIN = 4;
+    public static final int COIN = 4;
+    public static final int TERRAIN = 8;
+    public static final int ONE_WAY = 16;
 
     private int id;
     private Object data;

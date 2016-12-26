@@ -1,9 +1,7 @@
 package com.game.level;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.maps.Map;
 import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.PolygonMapObject;
@@ -30,6 +28,7 @@ public class Level {
     public static final String MAP_LAYER_TERRAIN = "terrain";
     public static final String MAP_LAYER_TERRAIN_BODIES = "terrain_bodies";
     public static final String MAP_LAYER_COINS = "coins";
+    public static final String MAP_PROPERTY_ONE_WAY_PLATFORM = "one-way-platform";
     World world;
     private OrthogonalTiledMapRenderer mapRenderer;
     private TiledMap tiledMap;
@@ -69,9 +68,13 @@ public class Level {
             fixtureDef.friction = 0.2f;
             fixtureDef.filter.categoryBits = Constants.CATEGORY_BIT_TERRAIN;
             fixtureDef.filter.maskBits = Constants.CATEGORY_BIT_PLAYER;
-
             Fixture fixture = body.createFixture(fixtureDef);
-            fixture.setUserData(new ContactUnit(ContactUnit.TERRAIN,this));
+            boolean oneWay = mapObject.getProperties().get(MAP_PROPERTY_ONE_WAY_PLATFORM,boolean.class);
+            if(oneWay){
+                fixture.setUserData(new ContactUnit(ContactUnit.ONE_WAY | ContactUnit.TERRAIN,this));
+            }else{
+                fixture.setUserData(new ContactUnit(ContactUnit.TERRAIN,this));
+            }
 
             shape.dispose();
         }
@@ -122,7 +125,7 @@ public class Level {
             Fixture fixture = body.createFixture(fixtureDef);
             Coin coin;
             stage.addActor(coin = new Coin(body.getPosition().x - rectangle.getWidth() / 2 / PIXEL_PER_METER, body.getPosition().y - rectangle.getHeight() / 2 / PIXEL_PER_METER, rectangle.getWidth() / PIXEL_PER_METER, rectangle.getHeight() / PIXEL_PER_METER));
-            fixture.setUserData(new ContactUnit(ContactUnit.COIN,coin));
+            fixture.setUserData(new ContactUnit(ContactUnit.COIN | ContactUnit.TERRAIN ,coin));
             shape.dispose();
 
         }
