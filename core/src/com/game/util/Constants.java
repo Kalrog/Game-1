@@ -18,4 +18,5 @@ public class Constants {
     public static final short CATEGORY_BIT_PLAYER = 2;
     public static final short CATEGORY_BIT_COIN = 4;
     public static final short CATEGORY_BIT_PLAYER_FOOT = 8;
+    public static final short CATEGORY_BIT_DEATH_ZONE = 16;
 }

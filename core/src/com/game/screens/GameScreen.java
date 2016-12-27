@@ -1,5 +1,6 @@
 package com.game.screens;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
@@ -27,15 +28,16 @@ public class GameScreen implements Screen {
     private Player player;
     private Stage stage;
     private Box2DDebugRenderer debugRenderer;
+    private Game game;
 
-    public GameScreen() {
+    public GameScreen(Game game) {
         world = new World(new Vector2(0, WORLD_GRAVITY), true);
         camera = new OrthographicCamera();
         camera.setToOrtho(false, CAMERA_WIDTH, CAMERA_HEIGHT);
         camera.update();
         Viewport viewport = new FillViewport(CAMERA_WIDTH, CAMERA_HEIGHT, camera);
         level = new Level(world);
-        player = new Player(level.getPlayerSpawn(), world);
+        player = new Player(level.getPlayerSpawn(), world, game);
         stage = new Stage(viewport, level.getBatch());
         level.createCoins(stage);
         stage.addActor(player);
@@ -66,7 +68,7 @@ public class GameScreen implements Screen {
         camera.position.y = player.getY() + 4.5f;
         camera.update();
         level.setView(camera);
-        //debugRenderer.render(world, camera.combined);
+        debugRenderer.render(world, camera.combined);
         stage.act();
         stage.draw();
 

@@ -1,5 +1,6 @@
 package com.game.character.player;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
@@ -11,6 +12,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.game.physics.ContactUnit;
+import com.game.screens.GameScreen;
 import com.game.util.Constants;
 
 import static com.game.util.Constants.PIXEL_PER_METER;
@@ -35,9 +37,11 @@ public class Player extends Actor {
     private boolean isGrounded = false;
     private boolean doubleJump = true;
     private int groundContacts = 0;
+    private Game game;
 
-    public Player(Vector2 spawnPoint, World world) {
+    public Player(Vector2 spawnPoint, World world, Game game) {
         this.world = world;
+        this.game = game;
         velocity = new Vector2();
         TextureAtlas textureAtlasWalking = new TextureAtlas("player/player_walk.atlas");
         walkAnim = new Animation<TextureAtlas.AtlasRegion>(1 / 12f, textureAtlasWalking.getRegions());
@@ -81,9 +85,9 @@ public class Player extends Actor {
                 break;
         }
         if (facesRight) {
-            batch.draw(frame, getX(), getY(), frame.getRegionWidth() / PIXEL_PER_METER, frame.getRegionHeight()/PIXEL_PER_METER);
+            batch.draw(frame, getX(), getY(), frame.getRegionWidth() / PIXEL_PER_METER, frame.getRegionHeight() / PIXEL_PER_METER);
         } else {
-            batch.draw(frame, getX() + frame.getRegionWidth()/PIXEL_PER_METER, getY(), -frame.getRegionWidth() / PIXEL_PER_METER, frame.getRegionHeight()/PIXEL_PER_METER);
+            batch.draw(frame, getX() + frame.getRegionWidth() / PIXEL_PER_METER, getY(), -frame.getRegionWidth() / PIXEL_PER_METER, frame.getRegionHeight() / PIXEL_PER_METER);
         }
     }
 
@@ -93,7 +97,7 @@ public class Player extends Actor {
             body.applyForce(0, JUMP_IMPULSE, body.getLocalCenter().x, body.getLocalCenter().y, true);
         }
         // double jump
-        else if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && doubleJump){
+        else if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && doubleJump) {
             body.applyForce(0, JUMP_IMPULSE, body.getLocalCenter().x, body.getLocalCenter().y, true);
             doubleJump = false;
         }
@@ -129,11 +133,10 @@ public class Player extends Actor {
     }
 
     private void createBody(Vector2 position) {
-        Gdx.app.log("test", "x: " + position.x);
         bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.linearDamping = 2f;
-        
+
         bodyDef.position.set(position.x / PIXEL_PER_METER, position.y / PIXEL_PER_METER);
         body = world.createBody(bodyDef);
         body.setFixedRotation(true);
@@ -147,21 +150,20 @@ public class Player extends Actor {
         fixtureDef.filter.categoryBits = Constants.CATEGORY_BIT_PLAYER;
         fixtureDef.filter.maskBits = Constants.CATEGORY_BIT_TERRAIN |
                 Constants.CATEGORY_BIT_COIN;
-        body.createFixture(fixtureDef).setUserData(new ContactUnit(ContactUnit.PLAYER,this));
+        body.createFixture(fixtureDef).setUserData(new ContactUnit(ContactUnit.PLAYER, this));
 
         // Player Foot Fixture
         shape.setAsBox(getWidth() / 2 * 0.9f, 0.1f, new Vector2(0, -0.9f), 0);
         fixtureDef.shape = shape;
         fixtureDef.density = 0;
         fixtureDef.isSensor = true;
-        fixtureDef.filter.categoryBits = Constants.CATEGORY_BIT_PLAYER ;
-        fixtureDef.filter.maskBits = Constants.CATEGORY_BIT_TERRAIN | Constants.CATEGORY_BIT_COIN;
-        body.createFixture(fixtureDef).setUserData(new ContactUnit(ContactUnit.PLAYER_FOOT | ContactUnit.PLAYER,this));
+        fixtureDef.filter.categoryBits = Constants.CATEGORY_BIT_PLAYER;
+        fixtureDef.filter.maskBits = Constants.CATEGORY_BIT_TERRAIN | Constants.CATEGORY_BIT_COIN | Constants.CATEGORY_BIT_DEATH_ZONE;
+        body.createFixture(fixtureDef).setUserData(new ContactUnit(ContactUnit.PLAYER_FOOT | ContactUnit.PLAYER, this));
         shape.dispose();
-
     }
 
-    public void changeGroundContact(int change){
+    public void changeGroundContact(int change) {
         groundContacts += change;
         isGrounded = groundContacts != 0;
         doubleJump = true;
@@ -173,5 +175,10 @@ public class Player extends Actor {
 
     private enum State {
         RUNNING, STANDING, JUMPING;
+    }
+
+    public void die() {
+        Gdx.app.log("test", "die");
+        game.setScreen(new GameScreen(game));
     }
 }

@@ -37,6 +37,16 @@ public class ContactHandler implements ContactListener {
             // increase number of ground contacts for the player
             ((Player) contactUnitB.getData()).changeGroundContact(1);
         }
+
+        // if ContactUnitA is a player and ContactUnitB is death zone
+        if (((contactUnitA.getId() & ContactUnit.PLAYER) != 0) && ((contactUnitB.getId() & ContactUnit.DEATH_ZONE) != 0)) {
+            ((Player) contactUnitA.getData()).die();
+
+        }
+        // if ContactUnitB is a player and ContactUnitA is death zone
+        else if (((contactUnitB.getId() & ContactUnit.PLAYER) != 0) && ((contactUnitA.getId() & ContactUnit.DEATH_ZONE) != 0)) {
+            ((Player) contactUnitB.getData()).die();
+        }
     }
 
     @Override
@@ -74,8 +84,8 @@ public class ContactHandler implements ContactListener {
         // seems to be unused since the player is always ContactUnitB
         if (((contactUnitA.getId() & ContactUnit.PLAYER) != 0) && ((contactUnitB.getId() & ContactUnit.ONE_WAY) != 0)) {
             //if the player is under the platform
-            if(fixtureA.getBody().getPosition().y - ((Player)contactUnitA.getData()).getHeight()/2 < fixtureB.getBody().getPosition().y){
-                Gdx.app.log("One-Way-Platform","Player was Contact Unit A");
+            if (fixtureA.getBody().getPosition().y - ((Player) contactUnitA.getData()).getHeight() / 2 < fixtureB.getBody().getPosition().y) {
+                Gdx.app.log("One-Way-Platform", "Player was Contact Unit A");
                 contact.setEnabled(false);
             }
 
@@ -84,8 +94,8 @@ public class ContactHandler implements ContactListener {
         // if ContactUnitB is part of the player and ContactUnitA is some kind of one way platform
         else if (((contactUnitB.getId() & ContactUnit.PLAYER) != 0) && ((contactUnitA.getId() & ContactUnit.ONE_WAY) != 0)) {
             //if the player is under the platform
-            if(fixtureB.getBody().getPosition().y - ((Player)contactUnitB.getData()).getHeight()/2 < fixtureA.getBody().getPosition().y) {
-                Gdx.app.log("One-Way-Platform","Player was Contact Unit B");
+            if (fixtureB.getBody().getPosition().y - ((Player) contactUnitB.getData()).getHeight() / 2 < fixtureA.getBody().getPosition().y) {
+                Gdx.app.log("One-Way-Platform", "Player was Contact Unit B");
                 contact.setEnabled(false);
             }
         }

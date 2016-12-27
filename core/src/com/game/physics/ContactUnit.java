@@ -12,16 +12,18 @@ public class ContactUnit {
     public static final int COIN = 4;
     public static final int TERRAIN = 8;
     public static final int ONE_WAY = 16;
+    public static final int DEATH_ZONE = 32;
 
     private int id;
     private Object data;
 
     /**
      * Creates a new ContactUnit to be used as fixture data
-     * @param id this parameter is used to recognize the type of fixture involved in the contact
+     *
+     * @param id   this parameter is used to recognize the type of fixture involved in the contact
      * @param data this parameter should be the game object that this ContactUnit represents
      */
-    public ContactUnit(int id,Object data){
+    public ContactUnit(int id, Object data) {
         this.id = id;
         this.data = data;
     }
