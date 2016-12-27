@@ -106,9 +106,11 @@ public class Player extends Actor {
                 Gdx.app.log("test", "wall jump");
                 body.applyForce(0, JUMP_IMPULSE, body.getLocalCenter().x, body.getLocalCenter().y, true);
                 if (facesRight) {
-                    body.applyForce(-JUMP_IMPULSE/2, 0, body.getLocalCenter().x, body.getLocalCenter().y, true);
-                }else{
-                    body.applyForce(JUMP_IMPULSE/2, 0, body.getLocalCenter().x, body.getLocalCenter().y, true);
+                    body.applyForce(-JUMP_IMPULSE / 2, 0, body.getLocalCenter().x, body.getLocalCenter().y, true);
+                    facesRight = false;
+                } else {
+                    body.applyForce(JUMP_IMPULSE / 2, 0, body.getLocalCenter().x, body.getLocalCenter().y, true);
+                    facesRight = true;
                 }
                 wallJump = false;
             }
@@ -193,16 +195,16 @@ public class Player extends Actor {
     }
 
     public void changeGroundContact(int change) {
-        Gdx.app.log("tst", "change ground contact: " + change);
         groundContacts += change;
         isGrounded = groundContacts != 0;
+        Gdx.app.log("tst", "change ground contact: " + groundContacts);
         doubleJump = true;
     }
 
     public void changeSideContact(int change) {
-        Gdx.app.log("tst", "change side contact: " + change);
         sideContacts += change;
         wallJump = sideContacts != 0;
+        Gdx.app.log("tst", "change side contact: " + sideContacts);
     }
 
     public BodyDef getBodyDef() {

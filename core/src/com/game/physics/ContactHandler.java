@@ -52,7 +52,10 @@ public class ContactHandler implements ContactListener {
                 }
                 break;
             case ContactUnit.PLAYER_FOOT:
-                ((Player) playerUnit.getData()).changeGroundContact(1);
+                if (otherUnit.getId() == ContactUnit.TERRAIN || otherUnit.getId() == ContactUnit.TERRAIN_ONE_WAY) {
+                    ((Player) playerUnit.getData()).changeGroundContact(1);
+                }
+
 
                 break;
             case ContactUnit.PLAYER_SIDE:
@@ -87,7 +90,7 @@ public class ContactHandler implements ContactListener {
 
                 break;
             case ContactUnit.PLAYER_FOOT:
-                if (otherUnit.getId() == ContactUnit.TERRAIN) {
+                if (otherUnit.getId() == ContactUnit.TERRAIN || otherUnit.getId() == ContactUnit.TERRAIN_ONE_WAY) {
                     ((Player) playerUnit.getData()).changeGroundContact(-1);
                 }
                 break;
@@ -113,7 +116,7 @@ public class ContactHandler implements ContactListener {
 
         // if ContactUnitA is part of the player and ContactUnitB is some kind of one way platform
         // seems to be unused since the player is always ContactUnitB
-        if (((contactUnitA.getId() & ContactUnit.PLAYER) != 0) && ((contactUnitB.getId() & ContactUnit.ONE_WAY) != 0)) {
+        if (((contactUnitA.getId() & ContactUnit.PLAYER) != 0) && ((contactUnitB.getId() & ContactUnit.TERRAIN_ONE_WAY) != 0)) {
             //if the player is under the platform
             if (fixtureA.getBody().getPosition().y - ((Player) contactUnitA.getData()).getHeight() / 2 < fixtureB.getBody().getPosition().y) {
                 Gdx.app.log("One-Way-Platform", "Player was Contact Unit A");
@@ -123,7 +126,7 @@ public class ContactHandler implements ContactListener {
 
         }
         // if ContactUnitB is part of the player and ContactUnitA is some kind of one way platform
-        else if (((contactUnitB.getId() & ContactUnit.PLAYER) != 0) && ((contactUnitA.getId() & ContactUnit.ONE_WAY) != 0)) {
+        else if (((contactUnitB.getId() & ContactUnit.PLAYER) != 0) && ((contactUnitA.getId() & ContactUnit.TERRAIN_ONE_WAY) != 0)) {
             //if the player is under the platform
             if (fixtureB.getBody().getPosition().y - ((Player) contactUnitB.getData()).getHeight() / 2 < fixtureA.getBody().getPosition().y) {
                 Gdx.app.log("One-Way-Platform", "Player was Contact Unit B");

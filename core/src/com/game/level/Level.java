@@ -1,6 +1,5 @@
 package com.game.level;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.maps.MapLayers;
@@ -77,7 +76,7 @@ public class Level {
             } catch (Exception e) {
             }
             if (oneWay) {
-                fixture.setUserData(new ContactUnit(ContactUnit.ONE_WAY | ContactUnit.TERRAIN, this));
+                fixture.setUserData(new ContactUnit(ContactUnit.TERRAIN_ONE_WAY, this));
             } else {
                 fixture.setUserData(new ContactUnit(ContactUnit.TERRAIN, this));
             }
