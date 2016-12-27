@@ -1,6 +1,5 @@
 package com.game.screens;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
@@ -13,6 +12,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.game.Game;
 import com.game.character.player.Player;
 import com.game.level.Level;
 import com.game.physics.ContactHandler;
@@ -32,12 +32,15 @@ public class GameScreen implements Screen {
     private Game game;
     private FPSLogger fpsLogger;
     private GameState gameState;
+    private Hud hud;
 
     enum GameState {
         RUNNING, PAUSED
     }
 
     public GameScreen(Game game) {
+        hud = new Hud(game.getBatch());
+        this.game = game;
         gameState = GameState.RUNNING;
         fpsLogger = new FPSLogger();
         world = new World(new Vector2(0, WORLD_GRAVITY), true);
@@ -47,10 +50,9 @@ public class GameScreen implements Screen {
         Viewport viewport = new FillViewport(CAMERA_WIDTH, CAMERA_HEIGHT, camera);
         level = new Level(world);
         player = new Player(level.getPlayerSpawn(), world, game);
-        stage = new Stage(viewport, level.getBatch());
+        stage = new Stage(viewport, game.getBatch());
         level.createCoins(stage);
         stage.addActor(player);
-        new GameOverScreen();
         world.setContactListener(ContactHandler.getInstance());
         debugRenderer = new Box2DDebugRenderer();
     }
@@ -80,6 +82,8 @@ public class GameScreen implements Screen {
             debugRenderer.render(world, camera.combined);
             stage.act();
             stage.draw();
+            game.getBatch().setProjectionMatrix(hud.stage.getCamera().combined);
+            hud.stage.draw();
         }
     }
 
@@ -110,6 +114,8 @@ public class GameScreen implements Screen {
 
     @Override
     public void dispose() {
-
+        world.dispose();
+        debugRenderer.dispose();
+        stage.dispose();
     }
 }

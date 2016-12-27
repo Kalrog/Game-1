@@ -38,7 +38,6 @@ public class Level {
     private int tileHeight;
     private int mapHeight;
     private int mapWidth;
-    private Stage stage;
 
     public Level(World world) {
         this.world = world;
@@ -156,10 +155,6 @@ public class Level {
         Vector2 center = new Vector2();
         center = rectangle.getCenter(center);
         return center;
-    }
-
-    public Batch getBatch() {
-        return mapRenderer.getBatch();
     }
 
     public void setView(OrthographicCamera camera) {

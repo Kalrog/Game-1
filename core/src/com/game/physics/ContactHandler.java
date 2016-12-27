@@ -119,7 +119,6 @@ public class ContactHandler implements ContactListener {
         if (((contactUnitA.getId() & ContactUnit.PLAYER) != 0) && ((contactUnitB.getId() & ContactUnit.TERRAIN_ONE_WAY) != 0)) {
             //if the player is under the platform
             if (fixtureA.getBody().getPosition().y - ((Player) contactUnitA.getData()).getHeight() / 2 < fixtureB.getBody().getPosition().y) {
-                Gdx.app.log("One-Way-Platform", "Player was Contact Unit A");
                 contact.setEnabled(false);
             }
 
@@ -129,7 +128,6 @@ public class ContactHandler implements ContactListener {
         else if (((contactUnitB.getId() & ContactUnit.PLAYER) != 0) && ((contactUnitA.getId() & ContactUnit.TERRAIN_ONE_WAY) != 0)) {
             //if the player is under the platform
             if (fixtureB.getBody().getPosition().y - ((Player) contactUnitB.getData()).getHeight() / 2 < fixtureA.getBody().getPosition().y) {
-                Gdx.app.log("One-Way-Platform", "Player was Contact Unit B");
                 contact.setEnabled(false);
             }
         }

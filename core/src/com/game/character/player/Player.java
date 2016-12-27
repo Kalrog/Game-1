@@ -1,6 +1,5 @@
 package com.game.character.player;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
@@ -11,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.game.Game;
 import com.game.physics.ContactUnit;
 import com.game.screens.GameScreen;
 import com.game.util.Constants;
@@ -26,6 +26,7 @@ public class Player extends Actor {
     private static final float MAX_VELOCITY = 2f;
     private static final float MOVEMENT_IMPULSE = 0.9f;
     private static final float JUMP_IMPULSE = 900f;
+    private static final float WALL_JUMP_IMPULSE = 900f;
     private Vector2 velocity;
     private boolean facesRight = true;
     private State state;
@@ -103,21 +104,18 @@ public class Player extends Actor {
             }
             // walljump
             else if (wallJump) {
-                Gdx.app.log("test", "wall jump");
                 body.applyForce(0, JUMP_IMPULSE, body.getLocalCenter().x, body.getLocalCenter().y, true);
                 if (facesRight) {
-                    body.applyForce(-JUMP_IMPULSE / 2, 0, body.getLocalCenter().x, body.getLocalCenter().y, true);
+                    body.applyForce(-WALL_JUMP_IMPULSE, 0, body.getLocalCenter().x, body.getLocalCenter().y, true);
                     facesRight = false;
                 } else {
-                    body.applyForce(JUMP_IMPULSE / 2, 0, body.getLocalCenter().x, body.getLocalCenter().y, true);
+                    body.applyForce(WALL_JUMP_IMPULSE, 0, body.getLocalCenter().x, body.getLocalCenter().y, true);
                     facesRight = true;
                 }
                 wallJump = false;
             }
             // double jump
             else if (doubleJump) {
-                Gdx.app.log("test", "double jump");
-
                 body.applyForce(0, JUMP_IMPULSE, body.getLocalCenter().x, body.getLocalCenter().y, true);
                 doubleJump = false;
             }
@@ -197,14 +195,12 @@ public class Player extends Actor {
     public void changeGroundContact(int change) {
         groundContacts += change;
         isGrounded = groundContacts != 0;
-        Gdx.app.log("tst", "change ground contact: " + groundContacts);
         doubleJump = true;
     }
 
     public void changeSideContact(int change) {
         sideContacts += change;
         wallJump = sideContacts != 0;
-        Gdx.app.log("tst", "change side contact: " + sideContacts);
     }
 
     public BodyDef getBodyDef() {
@@ -216,7 +212,6 @@ public class Player extends Actor {
     }
 
     public void die() {
-        Gdx.app.log("test", "die");
         game.setScreen(new GameScreen(game));
     }
 }
