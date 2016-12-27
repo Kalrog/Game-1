@@ -4,6 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
@@ -29,8 +30,16 @@ public class GameScreen implements Screen {
     private Stage stage;
     private Box2DDebugRenderer debugRenderer;
     private Game game;
+    private FPSLogger fpsLogger;
+    private GameState gameState;
+
+    enum GameState {
+        RUNNING, PAUSED
+    }
 
     public GameScreen(Game game) {
+        gameState = GameState.RUNNING;
+        fpsLogger = new FPSLogger();
         world = new World(new Vector2(0, WORLD_GRAVITY), true);
         camera = new OrthographicCamera();
         camera.setToOrtho(false, CAMERA_WIDTH, CAMERA_HEIGHT);
@@ -48,30 +57,30 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0, 0, 0, 0);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        world.step(1 / 30f, 6, 2);
-        world.clearForces();
-
-        if (Gdx.graphics.getBufferFormat().coverageSampling)
-            Gdx.gl.glClear(GL20.GL_COVERAGE_BUFFER_BIT_NV);
-
         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
             Gdx.app.exit();
         }
-
-        if (player.getX() < CAMERA_WIDTH / 2) {
-            camera.position.x = CAMERA_WIDTH / 2;
-        } else {
-            camera.position.x = player.getX();
+        if (gameState == GameState.RUNNING) {
+            //  fpsLogger.log();
+            Gdx.gl.glClearColor(0, 0, 0, 0);
+            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+            world.step(1 / 30f, 6, 2);
+            world.clearForces();
+            if (Gdx.graphics.getBufferFormat().coverageSampling) {
+                Gdx.gl.glClear(GL20.GL_COVERAGE_BUFFER_BIT_NV);
+            }
+            if (player.getX() < CAMERA_WIDTH / 2) {
+                camera.position.x = CAMERA_WIDTH / 2;
+            } else {
+                camera.position.x = player.getX();
+            }
+            camera.position.y = player.getY() + 4.5f;
+            camera.update();
+            level.setView(camera);
+            debugRenderer.render(world, camera.combined);
+            stage.act();
+            stage.draw();
         }
-        camera.position.y = player.getY() + 4.5f;
-        camera.update();
-        level.setView(camera);
-        debugRenderer.render(world, camera.combined);
-        stage.act();
-        stage.draw();
-
     }
 
     @Override
@@ -81,12 +90,12 @@ public class GameScreen implements Screen {
 
     @Override
     public void pause() {
-
+        gameState = GameState.PAUSED;
     }
 
     @Override
     public void resume() {
-
+        gameState = GameState.RUNNING;
     }
 
     @Override

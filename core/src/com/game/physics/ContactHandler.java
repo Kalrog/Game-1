@@ -26,45 +26,76 @@ public class ContactHandler implements ContactListener {
         ContactUnit contactUnitA = ((ContactUnit) contact.getFixtureA().getUserData());
         ContactUnit contactUnitB = ((ContactUnit) contact.getFixtureB().getUserData());
 
-        // if ContactUnitA is a playerfoot and ContactUnitB is some kind of Terrain
-        if (((contactUnitA.getId() & ContactUnit.PLAYER_FOOT) != 0) && ((contactUnitB.getId() & ContactUnit.TERRAIN) != 0)) {
-            // increase number of ground contacts for the player
-            ((Player) contactUnitA.getData()).changeGroundContact(1);
-
+        if (contactUnitA.getId() == ContactUnit.PLAYER
+                || contactUnitA.getId() == ContactUnit.PLAYER_FOOT
+                || contactUnitA.getId() == ContactUnit.PLAYER_SIDE) {
+            beginPlayerContact(contactUnitA, contactUnitB);
         }
-        // if ContactUnitB is a playerfoot and ContactUnitA is some kind of Terrain
-        else if (((contactUnitB.getId() & ContactUnit.PLAYER_FOOT) != 0) && ((contactUnitA.getId() & ContactUnit.TERRAIN) != 0)) {
-            // increase number of ground contacts for the player
-            ((Player) contactUnitB.getData()).changeGroundContact(1);
-        }
-
-        // if ContactUnitA is a player and ContactUnitB is death zone
-        if (((contactUnitA.getId() & ContactUnit.PLAYER) != 0) && ((contactUnitB.getId() & ContactUnit.DEATH_ZONE) != 0)) {
-            ((Player) contactUnitA.getData()).die();
-
-        }
-        // if ContactUnitB is a player and ContactUnitA is death zone
-        else if (((contactUnitB.getId() & ContactUnit.PLAYER) != 0) && ((contactUnitA.getId() & ContactUnit.DEATH_ZONE) != 0)) {
-            ((Player) contactUnitB.getData()).die();
+        if (contactUnitB.getId() == ContactUnit.PLAYER
+                || contactUnitB.getId() == ContactUnit.PLAYER_FOOT
+                || contactUnitB.getId() == ContactUnit.PLAYER_SIDE) {
+            beginPlayerContact(contactUnitB, contactUnitA);
         }
     }
 
+
+    private void beginPlayerContact(ContactUnit playerUnit, ContactUnit otherUnit) {
+        switch (playerUnit.getId()) {
+            case ContactUnit.PLAYER:
+                // Player collides with terrain
+                if (otherUnit.getId() == ContactUnit.TERRAIN) {
+
+                }
+                //Player collides with death zone
+                if (otherUnit.getId() == ContactUnit.DEATH_ZONE) {
+                    ((Player) playerUnit.getData()).die();
+                }
+                break;
+            case ContactUnit.PLAYER_FOOT:
+                ((Player) playerUnit.getData()).changeGroundContact(1);
+
+                break;
+            case ContactUnit.PLAYER_SIDE:
+                if (otherUnit.getId() == ContactUnit.TERRAIN) {
+                    ((Player) playerUnit.getData()).changeSideContact(1);
+                }
+                break;
+        }
+    }
+
+
     @Override
     public void endContact(Contact contact) {
-
         ContactUnit contactUnitA = ((ContactUnit) contact.getFixtureA().getUserData());
         ContactUnit contactUnitB = ((ContactUnit) contact.getFixtureB().getUserData());
 
-        // if ContactUnitA is a playerfoot and ContactUnitB is some kind of Terrain
-        if (((contactUnitA.getId() & ContactUnit.PLAYER_FOOT) != 0) && ((contactUnitB.getId() & ContactUnit.TERRAIN) != 0)) {
-            // reduce number of groundContacts for the player
-            ((Player) contactUnitA.getData()).changeGroundContact(-1);
-
+        if (contactUnitA.getId() == ContactUnit.PLAYER
+                || contactUnitA.getId() == ContactUnit.PLAYER_FOOT
+                || contactUnitA.getId() == ContactUnit.PLAYER_SIDE) {
+            endPlayerContact(contactUnitA, contactUnitB);
         }
-        // if ContactUnitB is a playerfoot and ContactUnitA is some kind of Terrain
-        else if (((contactUnitB.getId() & ContactUnit.PLAYER_FOOT) != 0) && ((contactUnitA.getId() & ContactUnit.TERRAIN) != 0)) {
-            // reduce number of groundContacts for the player
-            ((Player) contactUnitB.getData()).changeGroundContact(-1);
+        if (contactUnitB.getId() == ContactUnit.PLAYER
+                || contactUnitB.getId() == ContactUnit.PLAYER_FOOT
+                || contactUnitB.getId() == ContactUnit.PLAYER_SIDE) {
+            endPlayerContact(contactUnitB, contactUnitA);
+        }
+    }
+
+    private void endPlayerContact(ContactUnit playerUnit, ContactUnit otherUnit) {
+        switch (playerUnit.getId()) {
+            case ContactUnit.PLAYER:
+
+                break;
+            case ContactUnit.PLAYER_FOOT:
+                if (otherUnit.getId() == ContactUnit.TERRAIN) {
+                    ((Player) playerUnit.getData()).changeGroundContact(-1);
+                }
+                break;
+            case ContactUnit.PLAYER_SIDE:
+                if (otherUnit.getId() == ContactUnit.TERRAIN) {
+                    ((Player) playerUnit.getData()).changeSideContact(-1);
+                }
+                break;
         }
     }
 

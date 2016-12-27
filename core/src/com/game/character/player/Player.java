@@ -15,6 +15,7 @@ import com.game.physics.ContactUnit;
 import com.game.screens.GameScreen;
 import com.game.util.Constants;
 
+import static com.game.util.Constants.CATEGORY_BIT_DEATH_ZONE;
 import static com.game.util.Constants.PIXEL_PER_METER;
 
 /**
@@ -36,7 +37,9 @@ public class Player extends Actor {
     private World world;
     private boolean isGrounded = false;
     private boolean doubleJump = true;
+    private boolean wallJump = false;
     private int groundContacts = 0;
+    private int sideContacts = 0;
     private Game game;
 
     public Player(Vector2 spawnPoint, World world, Game game) {
@@ -65,7 +68,6 @@ public class Player extends Actor {
         super.act(delta);
         elapsedTime += delta;
         handleInput();
-
         setPosition((body.getPosition().x - getWidth() / 2), body.getPosition().y - getHeight() / 2);
     }
 
@@ -93,13 +95,30 @@ public class Player extends Actor {
 
     private void handleInput() {
         //jump
-        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && isGrounded) {
-            body.applyForce(0, JUMP_IMPULSE, body.getLocalCenter().x, body.getLocalCenter().y, true);
-        }
-        // double jump
-        else if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && doubleJump) {
-            body.applyForce(0, JUMP_IMPULSE, body.getLocalCenter().x, body.getLocalCenter().y, true);
-            doubleJump = false;
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+            //    Gdx.app.log("test" ," isGrounded: "+ isGrounded);
+            // normal jump
+            if (isGrounded) {
+                body.applyForce(0, JUMP_IMPULSE, body.getLocalCenter().x, body.getLocalCenter().y, true);
+            }
+            // walljump
+            else if (wallJump) {
+                Gdx.app.log("test", "wall jump");
+                body.applyForce(0, JUMP_IMPULSE, body.getLocalCenter().x, body.getLocalCenter().y, true);
+                if (facesRight) {
+                    body.applyForce(-JUMP_IMPULSE/2, 0, body.getLocalCenter().x, body.getLocalCenter().y, true);
+                }else{
+                    body.applyForce(JUMP_IMPULSE/2, 0, body.getLocalCenter().x, body.getLocalCenter().y, true);
+                }
+                wallJump = false;
+            }
+            // double jump
+            else if (doubleJump) {
+                Gdx.app.log("test", "double jump");
+
+                body.applyForce(0, JUMP_IMPULSE, body.getLocalCenter().x, body.getLocalCenter().y, true);
+                doubleJump = false;
+            }
         }
         //move left
         //apply linear impulse if max velocity is not reached yet
@@ -149,7 +168,7 @@ public class Player extends Actor {
         fixtureDef.density = 1f;
         fixtureDef.filter.categoryBits = Constants.CATEGORY_BIT_PLAYER;
         fixtureDef.filter.maskBits = Constants.CATEGORY_BIT_TERRAIN |
-                Constants.CATEGORY_BIT_COIN;
+                Constants.CATEGORY_BIT_COIN | CATEGORY_BIT_DEATH_ZONE;
         body.createFixture(fixtureDef).setUserData(new ContactUnit(ContactUnit.PLAYER, this));
 
         // Player Foot Fixture
@@ -158,15 +177,32 @@ public class Player extends Actor {
         fixtureDef.density = 0;
         fixtureDef.isSensor = true;
         fixtureDef.filter.categoryBits = Constants.CATEGORY_BIT_PLAYER;
-        fixtureDef.filter.maskBits = Constants.CATEGORY_BIT_TERRAIN | Constants.CATEGORY_BIT_COIN | Constants.CATEGORY_BIT_DEATH_ZONE;
-        body.createFixture(fixtureDef).setUserData(new ContactUnit(ContactUnit.PLAYER_FOOT | ContactUnit.PLAYER, this));
+        fixtureDef.filter.maskBits = Constants.CATEGORY_BIT_TERRAIN;
+        body.createFixture(fixtureDef).setUserData(new ContactUnit(ContactUnit.PLAYER_FOOT, this));
+
+        // Player left / right sensor
+        shape.setAsBox(getWidth() / 2 + 0.2f, getHeight() / 2 - 0.1f);
+        fixtureDef.shape = shape;
+        fixtureDef.density = 0;
+        fixtureDef.isSensor = true;
+        fixtureDef.filter.categoryBits = Constants.CATEGORY_BIT_PLAYER;
+        fixtureDef.filter.maskBits = Constants.CATEGORY_BIT_TERRAIN;
+        body.createFixture(fixtureDef).setUserData(new ContactUnit(ContactUnit.PLAYER_SIDE, this));
         shape.dispose();
+
     }
 
     public void changeGroundContact(int change) {
+        Gdx.app.log("tst", "change ground contact: " + change);
         groundContacts += change;
         isGrounded = groundContacts != 0;
         doubleJump = true;
+    }
+
+    public void changeSideContact(int change) {
+        Gdx.app.log("tst", "change side contact: " + change);
+        sideContacts += change;
+        wallJump = sideContacts != 0;
     }
 
     public BodyDef getBodyDef() {

@@ -71,7 +71,11 @@ public class Level {
             fixtureDef.filter.categoryBits = Constants.CATEGORY_BIT_TERRAIN;
             fixtureDef.filter.maskBits = Constants.CATEGORY_BIT_PLAYER;
             Fixture fixture = body.createFixture(fixtureDef);
-            boolean oneWay = mapObject.getProperties().get(MAP_PROPERTY_ONE_WAY_PLATFORM, boolean.class);
+            boolean oneWay = false;
+            try {
+                oneWay = mapObject.getProperties().get(MAP_PROPERTY_ONE_WAY_PLATFORM, boolean.class);
+            } catch (Exception e) {
+            }
             if (oneWay) {
                 fixture.setUserData(new ContactUnit(ContactUnit.ONE_WAY | ContactUnit.TERRAIN, this));
             } else {

@@ -13,6 +13,7 @@ public class ContactUnit {
     public static final int TERRAIN = 8;
     public static final int ONE_WAY = 16;
     public static final int DEATH_ZONE = 32;
+    public static final int PLAYER_SIDE = 64;
 
     private int id;
     private Object data;
