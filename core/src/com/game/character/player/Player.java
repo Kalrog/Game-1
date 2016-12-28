@@ -174,7 +174,7 @@ public class Player extends Actor {
         body.createFixture(fixtureDef).setUserData(new ContactUnit(ContactUnit.PLAYER, this));
 
         // Player Foot Fixture
-        shape.setAsBox(getWidth() / 2 * 0.9f, 0.1f, new Vector2(0, -0.9f), 0);
+        shape.setAsBox(getWidth() / 2 * 0.8f, 0.1f, new Vector2(0, -0.9f), 0);
         fixtureDef.shape = shape;
         fixtureDef.density = 0;
         fixtureDef.isSensor = true;

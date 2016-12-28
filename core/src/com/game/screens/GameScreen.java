@@ -83,6 +83,7 @@ public class GameScreen implements Screen {
             stage.draw();
             game.getBatch().setProjectionMatrix(hud.stage.getCamera().combined);
             hud.stage.draw();
+            fpsLogger.log();
         }
     }
 

@@ -61,14 +61,18 @@ public class ContactHandler implements ContactListener {
                 }
                 break;
             case PLAYER_FOOT:
-                if (otherUnit.getId() == TERRAIN || otherUnit.getId() == TERRAIN_ONE_WAY) {
+                if (otherUnit.getId() == TERRAIN || otherUnit.getId() == TERRAIN_ONE_WAY || otherUnit.getId() == MONSTER) {
                     ((Player) playerUnit.getData()).changeGroundContact(1);
                 }
-
+                if(otherUnit.getId() == MONSTER){
+                    if(otherUnit.getData().getClass() == Walker.class){
+                        ((Walker) otherUnit.getData()).die();
+                    }
+                }
 
                 break;
             case PLAYER_SIDE:
-                if (otherUnit.getId() == TERRAIN || otherUnit.getId() == TERRAIN_ONE_WAY) {
+                if (otherUnit.getId() == TERRAIN || otherUnit.getId() == TERRAIN_ONE_WAY ) {
                     ((Player) playerUnit.getData()).changeSideContact(1);
                 }
                 break;
@@ -114,7 +118,7 @@ public class ContactHandler implements ContactListener {
 
                 break;
             case PLAYER_FOOT:
-                if (otherUnit.getId() == TERRAIN|| otherUnit.getId() == TERRAIN_ONE_WAY) {
+                if (otherUnit.getId() == TERRAIN|| otherUnit.getId() == TERRAIN_ONE_WAY || otherUnit.getId() == MONSTER) {
                     ((Player) playerUnit.getData()).changeGroundContact(-1);
                 }
                 break;

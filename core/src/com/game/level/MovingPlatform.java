@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.game.physics.ContactUnit;
 import com.game.util.Constants;
 import com.game.util.Helper;
+import com.game.util.MoveToActionBox2D;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,7 +24,7 @@ import static com.game.util.Constants.PIXEL_PER_METER;
  * Created by Philipp on 28.12.2016.
  */
 public class MovingPlatform extends Actor {
-
+    private static float SPEED = 50f;
     private int width;
     private Texture texture;
     private Body body;
@@ -34,21 +35,24 @@ public class MovingPlatform extends Actor {
         this.width = width;
         setPosition(vertices[0] / PIXEL_PER_METER, vertices[1] / PIXEL_PER_METER);
 
+
         texture = new Texture("level/grassMid.png");
         setSize(texture.getWidth() / PIXEL_PER_METER, texture.getHeight() / PIXEL_PER_METER);
 
-        MoveToAction[] actions = new MoveToAction[this.vertices.length];
-        for (int i = 0; i < this.vertices.length; i++) {
-            actions[i] = new MoveToAction();
-            actions[i].setPosition(this.vertices[i].x / PIXEL_PER_METER, this.vertices[i].y / PIXEL_PER_METER);
-            actions[i].setDuration(1f);
-        }
-        ArrayList<MoveToAction> allActions = new ArrayList<MoveToAction>();
-        allActions.addAll(Arrays.asList(actions));
         body = createBody(world);
+
+        MoveToActionBox2D[] actions = new MoveToActionBox2D[this.vertices.length];
+
+        for (int i = 0; i < this.vertices.length; i++) {
+            actions[i] = new MoveToActionBox2D(body);
+            actions[i].setPosition(this.vertices[i].x / PIXEL_PER_METER , this.vertices[i].y / PIXEL_PER_METER);
+            actions[i].setSpeed(SPEED / PIXEL_PER_METER);
+        }
+        ArrayList<MoveToActionBox2D> allActions = new ArrayList<MoveToActionBox2D>();
+        allActions.addAll(Arrays.asList(actions));
         //TODO add actions in reverse order to allActions
        // Gdx.app.log("test", Arrays.toString(allActions.toArray()));
-        addAction(Actions.forever(Actions.sequence(allActions.toArray(new MoveToAction[allActions.size()]))));
+        addAction(Actions.forever(Actions.sequence(allActions.toArray(new MoveToActionBox2D[allActions.size()]))));
     }
 
 
@@ -62,13 +66,14 @@ public class MovingPlatform extends Actor {
     @Override
     public void act(float delta) {
         super.act(delta);
-        body.setTransform(getX() + getWidth() / 2, getY() + getHeight() / 2, 0);
+        //body.setTransform(getX() + getWidth() / 2, getY() + getHeight() / 2, 0);
+        setPosition(body.getPosition().x - getWidth()/2,body.getPosition().y - getHeight()/2);
     }
 
     private Body createBody(World world) {
         BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.StaticBody;
-        bodyDef.position.set((getX() + getWidth() / 2), (getY() + getHeight() / 2));
+        bodyDef.type = BodyDef.BodyType.KinematicBody;
+        bodyDef.position.set(getX(), getY());
         Body body = world.createBody(bodyDef);
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(getWidth() / 2, getHeight() / 2);

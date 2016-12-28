@@ -19,6 +19,7 @@ import static com.game.util.Constants.PIXEL_PER_METER;
 public class Walker extends Actor {
     private static final float MAX_VELOCITY = 2f;
     private static final float MOVEMENT_IMPULSE = 0.3f;
+    private static final float DESPAWN_TIME = 1f;
     private Vector2 velocity;
     private boolean facesRight = false;
     private World world;
@@ -26,6 +27,7 @@ public class Walker extends Actor {
     private Animation<TextureRegion> walkAnim, deadAnim;
     private State state;
     private float elapsedTime = 0;
+    private float timeUntilDespawn = DESPAWN_TIME;
 
     public Walker(Vector2 spawnPoint, World world) {
         this.world = world;
@@ -48,6 +50,7 @@ public class Walker extends Actor {
         state = State.WALKING;
     }
 
+
     @Override
     public void act(float delta) {
         super.act(delta);
@@ -55,12 +58,21 @@ public class Walker extends Actor {
         setPosition((body.getPosition().x - getWidth() / 2), body.getPosition().y - getHeight() / 2);
         velocity = body.getLinearVelocity();
 
-        if(Math.abs(velocity.x) < MAX_VELOCITY){
+        if(Math.abs(velocity.x) < MAX_VELOCITY && state == State.WALKING){
             if(facesRight){
                 body.applyLinearImpulse(new Vector2(MOVEMENT_IMPULSE, 0),body.getWorldCenter(), true);
             }else {
                 body.applyLinearImpulse(new Vector2(-MOVEMENT_IMPULSE, 0),body.getWorldCenter(), true);
             }
+        }
+
+        if(state == State.DEAD){
+            timeUntilDespawn -= delta;
+        }
+
+        if(timeUntilDespawn < 0){
+            this.remove();
+            world.destroyBody(body);
         }
     }
 
@@ -114,6 +126,7 @@ public class Walker extends Actor {
         shape.setAsBox(getWidth() / 2 * 0.1f, getHeight() / 2 * 0.1f, new Vector2(getWidth() / 2, -getHeight() / 2), 0);
         fixtureDef.shape = shape;
         body.createFixture(fixtureDef).setUserData(new ContactUnit(ContactUnit.WALKER_SENSOR_R, this));
+        shape.dispose();
 
 
     }
@@ -122,6 +135,10 @@ public class Walker extends Actor {
         velocity.x *= -1;
         facesRight = !facesRight;
         body.setLinearVelocity(velocity);
+    }
+
+    public void die(){
+        state = State.DEAD;
     }
 
     public boolean isFacingRight(){

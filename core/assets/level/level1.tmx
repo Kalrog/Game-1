@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="200" height="32" tilewidth="70" tileheight="70" nextobjectid="53">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="200" height="32" tilewidth="70" tileheight="70" nextobjectid="73">
  <tileset firstgid="1" name="terrain" tilewidth="90" tileheight="90" tilecount="22" columns="0">
   <tile id="0">
    <image width="70" height="70" source="../tiles/grass.png"/>
@@ -196,19 +196,49 @@
   <object id="50" x="1120" y="1190" width="70" height="490"/>
  </objectgroup>
  <objectgroup name="spawn points">
-  <object id="3" name="playerSpawn" x="420" y="1750" width="70" height="70"/>
+  <object id="3" name="playerSpawn" x="794.384" y="1949.51" width="70" height="70"/>
  </objectgroup>
  <objectgroup name="coins"/>
  <objectgroup name="death zone">
   <object id="44" x="0" y="2205" width="2100" height="35"/>
  </objectgroup>
  <objectgroup color="#0055ff" name="moving platforms">
-  <object id="51" x="1470" y="1610">
-   <polyline points="0,0 280,0 420,140 560,140 630,70 630,-70"/>
+  <object id="71" x="1694.58" y="1922.48">
+   <polyline points="0,0 330.049,-12.3153 490.148,-238.916 751.232,-147.783 731.527,49.2611 596.059,-118.227 935.961,-125.616"/>
   </object>
  </objectgroup>
  <objectgroup name="monster spawn points">
   <object id="52" type="Monster Spawn" x="1469" y="1861">
+   <properties>
+    <property name="monster type" value="walker"/>
+   </properties>
+  </object>
+  <object id="53" type="Monster Spawn" x="1619" y="1858">
+   <properties>
+    <property name="monster type" value="walker"/>
+   </properties>
+  </object>
+  <object id="65" type="Monster Spawn" x="1540.4" y="1865.28">
+   <properties>
+    <property name="monster type" value="walker"/>
+   </properties>
+  </object>
+  <object id="66" type="Monster Spawn" x="1401.44" y="2003.57">
+   <properties>
+    <property name="monster type" value="walker"/>
+   </properties>
+  </object>
+  <object id="67" type="Monster Spawn" x="1500.03" y="2004.9">
+   <properties>
+    <property name="monster type" value="walker"/>
+   </properties>
+  </object>
+  <object id="68" type="Monster Spawn" x="1576.79" y="2006.88">
+   <properties>
+    <property name="monster type" value="walker"/>
+   </properties>
+  </object>
+  <object id="69" type="Monster Spawn" x="1679.35" y="2009.53">
    <properties>
     <property name="monster type" value="walker"/>
    </properties>
