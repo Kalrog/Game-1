@@ -9,12 +9,14 @@ package com.game.physics;
 public class ContactUnit {
     public static final int PLAYER = 1;
     public static final int PLAYER_FOOT = 2;
-    public static final int COIN = 4;
-    public static final int TERRAIN = 8;
-    public static final int TERRAIN_ONE_WAY = 16;
-    public static final int DEATH_ZONE = 32;
-    public static final int PLAYER_SIDE = 64;
-
+    public static final int COIN = 3;
+    public static final int TERRAIN = 4;
+    public static final int TERRAIN_ONE_WAY = 5;
+    public static final int MONSTER = 6;
+    public static final int DEATH_ZONE = 7;
+    public static final int PLAYER_SIDE = 8;
+    public static final int WALKER_SENSOR_L = 9;
+    public static final int WALKER_SENSOR_R = 10;
     private int id;
     private Object data;
 

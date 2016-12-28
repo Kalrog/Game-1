@@ -1,5 +1,6 @@
 package com.game.level;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.maps.MapLayers;
@@ -40,6 +41,7 @@ public class Level {
     private int tileHeight;
     private int mapHeight;
     private int mapWidth;
+    private Stage stage;
 
     public Level(World world,Stage stage) {
         tiledMap = new TmxMapLoader().load("level/level1.tmx");
@@ -70,7 +72,7 @@ public class Level {
             fixtureDef.density = 1f;
             fixtureDef.friction = 0.2f;
             fixtureDef.filter.categoryBits = Constants.CATEGORY_BIT_TERRAIN;
-            fixtureDef.filter.maskBits = Constants.CATEGORY_BIT_PLAYER;
+            fixtureDef.filter.maskBits = Constants.CATEGORY_BIT_PLAYER | Constants.CATEGORY_BIT_MONSTER;
             Fixture fixture = body.createFixture(fixtureDef);
             boolean oneWay = false;
             try {
@@ -101,7 +103,7 @@ public class Level {
             fixtureDef.density = 1f;
             fixtureDef.friction = 0.2f;
             fixtureDef.filter.categoryBits = Constants.CATEGORY_BIT_TERRAIN;
-            fixtureDef.filter.maskBits = Constants.CATEGORY_BIT_PLAYER;
+            fixtureDef.filter.maskBits = Constants.CATEGORY_BIT_PLAYER | Constants.CATEGORY_BIT_MONSTER;
             Fixture fixture = body.createFixture(fixtureDef);
             fixture.setUserData(new ContactUnit(ContactUnit.TERRAIN, this));
             shape.dispose();
@@ -158,6 +160,10 @@ public class Level {
         Vector2 center = new Vector2();
         center = rectangle.getCenter(center);
         return center;
+    }
+
+    public Batch getBatch() {
+        return mapRenderer.getBatch();
     }
 
     public void setView(OrthographicCamera camera) {

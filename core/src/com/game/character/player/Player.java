@@ -16,6 +16,7 @@ import com.game.screens.GameScreen;
 import com.game.util.Constants;
 
 import static com.game.util.Constants.CATEGORY_BIT_DEATH_ZONE;
+import static com.game.util.Constants.CATEGORY_BIT_MONSTER;
 import static com.game.util.Constants.PIXEL_PER_METER;
 
 /**
@@ -23,7 +24,7 @@ import static com.game.util.Constants.PIXEL_PER_METER;
  */
 public class Player extends Actor {
 
-    private static final float MAX_VELOCITY = 2f;
+    private static final float MAX_VELOCITY = 15f;
     private static final float MOVEMENT_IMPULSE = 0.9f;
     private static final float JUMP_IMPULSE = 900f;
     private static final float WALL_JUMP_IMPULSE = 900f;
@@ -70,6 +71,7 @@ public class Player extends Actor {
         elapsedTime += delta;
         handleInput();
         setPosition((body.getPosition().x - getWidth() / 2), body.getPosition().y - getHeight() / 2);
+        velocity = body.getLinearVelocity();
     }
 
     @Override
@@ -134,7 +136,7 @@ public class Player extends Actor {
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
             if (velocity.x < MAX_VELOCITY) {
                 facesRight = true;
-                body.applyLinearImpulse(MOVEMENT_IMPULSE, 0, body.getPosition().x, body.getPosition().y, true);
+                body.applyLinearImpulse(new Vector2(MOVEMENT_IMPULSE, 0),body.getWorldCenter(), true);
             }
         }
         handleState();
@@ -155,10 +157,10 @@ public class Player extends Actor {
         bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.linearDamping = 2f;
-
+        bodyDef.fixedRotation = true;
         bodyDef.position.set(position.x / PIXEL_PER_METER, position.y / PIXEL_PER_METER);
+
         body = world.createBody(bodyDef);
-        body.setFixedRotation(true);
 
         // Main Player Fixture
         PolygonShape shape = new PolygonShape();
@@ -168,7 +170,7 @@ public class Player extends Actor {
         fixtureDef.density = 1f;
         fixtureDef.filter.categoryBits = Constants.CATEGORY_BIT_PLAYER;
         fixtureDef.filter.maskBits = Constants.CATEGORY_BIT_TERRAIN |
-                Constants.CATEGORY_BIT_COIN | CATEGORY_BIT_DEATH_ZONE;
+                Constants.CATEGORY_BIT_COIN | CATEGORY_BIT_DEATH_ZONE | CATEGORY_BIT_MONSTER;
         body.createFixture(fixtureDef).setUserData(new ContactUnit(ContactUnit.PLAYER, this));
 
         // Player Foot Fixture
@@ -177,7 +179,7 @@ public class Player extends Actor {
         fixtureDef.density = 0;
         fixtureDef.isSensor = true;
         fixtureDef.filter.categoryBits = Constants.CATEGORY_BIT_PLAYER;
-        fixtureDef.filter.maskBits = Constants.CATEGORY_BIT_TERRAIN;
+        fixtureDef.filter.maskBits = Constants.CATEGORY_BIT_TERRAIN | CATEGORY_BIT_MONSTER;
         body.createFixture(fixtureDef).setUserData(new ContactUnit(ContactUnit.PLAYER_FOOT, this));
 
         // Player left / right sensor
@@ -186,7 +188,7 @@ public class Player extends Actor {
         fixtureDef.density = 0;
         fixtureDef.isSensor = true;
         fixtureDef.filter.categoryBits = Constants.CATEGORY_BIT_PLAYER;
-        fixtureDef.filter.maskBits = Constants.CATEGORY_BIT_TERRAIN;
+        fixtureDef.filter.maskBits = Constants.CATEGORY_BIT_TERRAIN | CATEGORY_BIT_MONSTER;
         body.createFixture(fixtureDef).setUserData(new ContactUnit(ContactUnit.PLAYER_SIDE, this));
         shape.dispose();
 

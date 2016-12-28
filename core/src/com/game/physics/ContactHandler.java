@@ -2,7 +2,10 @@ package com.game.physics;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.physics.box2d.*;
+import com.game.character.monsters.Walker;
 import com.game.character.player.Player;
+
+import static com.game.physics.ContactUnit.*;
 
 /**
  * Created by jonathan on 25.12.16.
@@ -26,43 +29,58 @@ public class ContactHandler implements ContactListener {
         ContactUnit contactUnitA = ((ContactUnit) contact.getFixtureA().getUserData());
         ContactUnit contactUnitB = ((ContactUnit) contact.getFixtureB().getUserData());
 
-        if (contactUnitA.getId() == ContactUnit.PLAYER
-                || contactUnitA.getId() == ContactUnit.PLAYER_FOOT
-                || contactUnitA.getId() == ContactUnit.PLAYER_SIDE) {
+        if (contactUnitA.getId() == PLAYER
+                || contactUnitA.getId() == PLAYER_FOOT
+                || contactUnitA.getId() == PLAYER_SIDE) {
             beginPlayerContact(contactUnitA, contactUnitB);
         }
-        if (contactUnitB.getId() == ContactUnit.PLAYER
-                || contactUnitB.getId() == ContactUnit.PLAYER_FOOT
-                || contactUnitB.getId() == ContactUnit.PLAYER_SIDE) {
+        if (contactUnitB.getId() == PLAYER
+                || contactUnitB.getId() == PLAYER_FOOT
+                || contactUnitB.getId() == PLAYER_SIDE) {
             beginPlayerContact(contactUnitB, contactUnitA);
+        }
+        if(contactUnitA.getId() == WALKER_SENSOR_L || contactUnitA.getId() == WALKER_SENSOR_R ){
+            beginWalkerContact(contactUnitA,contactUnitB);
+        }
+        if(contactUnitB.getId() == WALKER_SENSOR_L || contactUnitB.getId() == WALKER_SENSOR_R ){
+            beginWalkerContact(contactUnitB,contactUnitA);
         }
     }
 
 
     private void beginPlayerContact(ContactUnit playerUnit, ContactUnit otherUnit) {
         switch (playerUnit.getId()) {
-            case ContactUnit.PLAYER:
+            case PLAYER:
                 // Player collides with terrain
-                if (otherUnit.getId() == ContactUnit.TERRAIN) {
+                if (otherUnit.getId() == TERRAIN) {
 
                 }
                 //Player collides with death zone
-                if (otherUnit.getId() == ContactUnit.DEATH_ZONE) {
+                if (otherUnit.getId() == DEATH_ZONE) {
                     ((Player) playerUnit.getData()).die();
                 }
                 break;
-            case ContactUnit.PLAYER_FOOT:
-                if (otherUnit.getId() == ContactUnit.TERRAIN || otherUnit.getId() == ContactUnit.TERRAIN_ONE_WAY) {
+            case PLAYER_FOOT:
+                if (otherUnit.getId() == TERRAIN || otherUnit.getId() == TERRAIN_ONE_WAY) {
                     ((Player) playerUnit.getData()).changeGroundContact(1);
                 }
 
 
                 break;
-            case ContactUnit.PLAYER_SIDE:
-                if (otherUnit.getId() == ContactUnit.TERRAIN) {
+            case PLAYER_SIDE:
+                if (otherUnit.getId() == TERRAIN || otherUnit.getId() == TERRAIN_ONE_WAY) {
                     ((Player) playerUnit.getData()).changeSideContact(1);
                 }
                 break;
+        }
+    }
+
+    private void beginWalkerContact(ContactUnit walkerUnit,ContactUnit otherUnit){
+        Walker walker = ((Walker) walkerUnit.getData());
+        if(walkerUnit.getId() == WALKER_SENSOR_R && walker.isFacingRight()){
+            walker.turnAround();
+        }else if(walkerUnit.getId() == WALKER_SENSOR_L && !walker.isFacingRight()){
+            walker.turnAround();
         }
     }
 
@@ -72,33 +90,48 @@ public class ContactHandler implements ContactListener {
         ContactUnit contactUnitA = ((ContactUnit) contact.getFixtureA().getUserData());
         ContactUnit contactUnitB = ((ContactUnit) contact.getFixtureB().getUserData());
 
-        if (contactUnitA.getId() == ContactUnit.PLAYER
-                || contactUnitA.getId() == ContactUnit.PLAYER_FOOT
-                || contactUnitA.getId() == ContactUnit.PLAYER_SIDE) {
+        if (contactUnitA.getId() == PLAYER
+                || contactUnitA.getId() == PLAYER_FOOT
+                || contactUnitA.getId() == PLAYER_SIDE) {
             endPlayerContact(contactUnitA, contactUnitB);
         }
-        if (contactUnitB.getId() == ContactUnit.PLAYER
-                || contactUnitB.getId() == ContactUnit.PLAYER_FOOT
-                || contactUnitB.getId() == ContactUnit.PLAYER_SIDE) {
+        if (contactUnitB.getId() == PLAYER
+                || contactUnitB.getId() == PLAYER_FOOT
+                || contactUnitB.getId() == PLAYER_SIDE) {
             endPlayerContact(contactUnitB, contactUnitA);
+        }
+        if(contactUnitA.getId() == WALKER_SENSOR_L || contactUnitA.getId() == WALKER_SENSOR_R ){
+            endWalkerContact(contactUnitA,contactUnitB);
+        }
+        if(contactUnitB.getId() == WALKER_SENSOR_L || contactUnitB.getId() == WALKER_SENSOR_R ){
+            endWalkerContact(contactUnitB,contactUnitA);
         }
     }
 
     private void endPlayerContact(ContactUnit playerUnit, ContactUnit otherUnit) {
         switch (playerUnit.getId()) {
-            case ContactUnit.PLAYER:
+            case PLAYER:
 
                 break;
-            case ContactUnit.PLAYER_FOOT:
-                if (otherUnit.getId() == ContactUnit.TERRAIN || otherUnit.getId() == ContactUnit.TERRAIN_ONE_WAY) {
+            case PLAYER_FOOT:
+                if (otherUnit.getId() == TERRAIN|| otherUnit.getId() == TERRAIN_ONE_WAY) {
                     ((Player) playerUnit.getData()).changeGroundContact(-1);
                 }
                 break;
-            case ContactUnit.PLAYER_SIDE:
-                if (otherUnit.getId() == ContactUnit.TERRAIN) {
+            case PLAYER_SIDE:
+                if (otherUnit.getId() == TERRAIN || otherUnit.getId() == TERRAIN_ONE_WAY) {
                     ((Player) playerUnit.getData()).changeSideContact(-1);
                 }
                 break;
+        }
+    }
+
+    private void endWalkerContact(ContactUnit walkerUnit,ContactUnit otherUnit){
+        Walker walker = ((Walker) walkerUnit.getData());
+        if(walkerUnit.getId() == WALKER_SENSOR_R && walker.isFacingRight()){
+            walker.turnAround();
+        }else if(walkerUnit.getId() == WALKER_SENSOR_L && !walker.isFacingRight()){
+            walker.turnAround();
         }
     }
 
@@ -114,20 +147,11 @@ public class ContactHandler implements ContactListener {
         ContactUnit contactUnitA = ((ContactUnit) fixtureA.getUserData());
         ContactUnit contactUnitB = ((ContactUnit) fixtureB.getUserData());
 
-        // if ContactUnitA is part of the player and ContactUnitB is some kind of one way platform
-        // seems to be unused since the player is always ContactUnitB
-        if (((contactUnitA.getId() & ContactUnit.PLAYER) != 0) && ((contactUnitB.getId() & ContactUnit.TERRAIN_ONE_WAY) != 0)) {
-            //if the player is under the platform
-            if (fixtureA.getBody().getPosition().y - ((Player) contactUnitA.getData()).getHeight() / 2 < fixtureB.getBody().getPosition().y) {
-                contact.setEnabled(false);
-            }
-
-
-        }
-        // if ContactUnitB is part of the player and ContactUnitA is some kind of one way platform
-        else if (((contactUnitB.getId() & ContactUnit.PLAYER) != 0) && ((contactUnitA.getId() & ContactUnit.TERRAIN_ONE_WAY) != 0)) {
+        // if ContactUnitB is the player and ContactUnitA is a one way platform
+        if ( contactUnitB.getId() == PLAYER && contactUnitA.getId() == TERRAIN_ONE_WAY) {
             //if the player is under the platform
             if (fixtureB.getBody().getPosition().y - ((Player) contactUnitB.getData()).getHeight() / 2 < fixtureA.getBody().getPosition().y) {
+                //Gdx.app.log("One-Way-Platform", "Player was Contact Unit B");
                 contact.setEnabled(false);
             }
         }

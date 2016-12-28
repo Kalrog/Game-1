@@ -12,7 +12,6 @@ import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.game.physics.ContactUnit;
 import com.game.util.Constants;
 import com.game.util.Helper;
-import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
