@@ -5,11 +5,13 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.PolygonMapObject;
+import com.badlogic.gdx.maps.objects.PolylineMapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.math.Polyline;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
@@ -29,8 +31,8 @@ public class Level {
     public static final String MAP_LAYER_TERRAIN_BODIES = "terrain bodies";
     public static final String MAP_LAYER_COINS = "coins";
     public static final String MAP_LAYER_DEATH_ZONE = "death zone";
+    public static final String MAP_LAYER_MOVING_PLATFORMS = "moving platforms";
     public static final String MAP_PROPERTY_ONE_WAY_PLATFORM = "one-way-platform";
-    World world;
     private OrthogonalTiledMapRenderer mapRenderer;
     private TiledMap tiledMap;
     private MapLayers mapLayers;
@@ -39,8 +41,7 @@ public class Level {
     private int mapHeight;
     private int mapWidth;
 
-    public Level(World world) {
-        this.world = world;
+    public Level(World world,Stage stage) {
         tiledMap = new TmxMapLoader().load("level/level1.tmx");
         mapLayers = tiledMap.getLayers();
         tileWidth = ((Integer) tiledMap.getProperties().get("tilewidth"));
@@ -48,11 +49,13 @@ public class Level {
         mapWidth = ((Integer) tiledMap.getProperties().get("width"));
         mapHeight = ((Integer) tiledMap.getProperties().get("height"));
         mapRenderer = new OrthogonalTiledMapRenderer(tiledMap, 1 / PIXEL_PER_METER);
-        createTerrainBodies();
-        createDeathZones();
+        createTerrainBodies(world);
+        createDeathZones(world);
+        createCoins(world,stage);
+        createMovingPlatforms(world,stage);
     }
 
-    private void createTerrainBodies() {
+    private void createTerrainBodies(World world) {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.StaticBody;
         //create rectangle bodies
@@ -105,7 +108,7 @@ public class Level {
         }
     }
 
-    public void createCoins(Stage stage) {
+    private void createCoins(World world,Stage stage) {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.StaticBody;
         for (MapObject mapObject : mapLayers.get(MAP_LAYER_COINS).getObjects().getByType(RectangleMapObject.class)) {
@@ -128,7 +131,7 @@ public class Level {
         }
     }
 
-    public void createDeathZones() {
+    private void createDeathZones(World world) {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.StaticBody;
         //create rectangle bodies
@@ -160,6 +163,13 @@ public class Level {
     public void setView(OrthographicCamera camera) {
         mapRenderer.setView(camera);
         mapRenderer.render();
+    }
+
+    private void createMovingPlatforms(World world,Stage stage) {
+        for (MapObject mapObject : mapLayers.get(MAP_LAYER_MOVING_PLATFORMS).getObjects().getByType(PolylineMapObject.class)) {
+            Polyline poly = ((PolylineMapObject) mapObject).getPolyline();
+            stage.addActor(new MovingPlatform(world, poly.getTransformedVertices(), 1));
+        }
     }
 
 

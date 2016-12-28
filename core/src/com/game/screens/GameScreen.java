@@ -48,10 +48,9 @@ public class GameScreen implements Screen {
         camera.setToOrtho(false, CAMERA_WIDTH, CAMERA_HEIGHT);
         camera.update();
         Viewport viewport = new FillViewport(CAMERA_WIDTH, CAMERA_HEIGHT, camera);
-        level = new Level(world);
-        player = new Player(level.getPlayerSpawn(), world, game);
         stage = new Stage(viewport, game.getBatch());
-        level.createCoins(stage);
+        level = new Level(world, stage);
+        player = new Player(level.getPlayerSpawn(), world, game);
         stage.addActor(player);
         world.setContactListener(ContactHandler.getInstance());
         debugRenderer = new Box2DDebugRenderer();
