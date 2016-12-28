@@ -17,6 +17,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.game.character.monsters.Walker;
 import com.game.items.Coin;
 import com.game.physics.ContactUnit;
 import com.game.util.Constants;
@@ -27,6 +28,7 @@ import static com.game.util.Constants.PIXEL_PER_METER;
  * Created by Philipp on 22.12.2016.
  */
 public class Level {
+    public static final String MAP_LAYER_MONSTER_SPAWN_POINTS = "monster spawn points";
     public static final String MAP_LAYER_SPAWN_POINTS = "spawn points";
     public static final String MAP_LAYER_TERRAIN = "terrain";
     public static final String MAP_LAYER_TERRAIN_BODIES = "terrain bodies";
@@ -34,6 +36,8 @@ public class Level {
     public static final String MAP_LAYER_DEATH_ZONE = "death zone";
     public static final String MAP_LAYER_MOVING_PLATFORMS = "moving platforms";
     public static final String MAP_PROPERTY_ONE_WAY_PLATFORM = "one-way-platform";
+    public static final String MAP_PROPERTY_MONSTER_TYPE = "monster type";
+    public static final String MONSTER_TYPE_WALKER = "walker";
     private OrthogonalTiledMapRenderer mapRenderer;
     private TiledMap tiledMap;
     private MapLayers mapLayers;
@@ -55,6 +59,7 @@ public class Level {
         createDeathZones(world);
         createCoins(world,stage);
         createMovingPlatforms(world,stage);
+        spawnMonsters(world, stage);
     }
 
     private void createTerrainBodies(World world) {
@@ -175,6 +180,19 @@ public class Level {
         for (MapObject mapObject : mapLayers.get(MAP_LAYER_MOVING_PLATFORMS).getObjects().getByType(PolylineMapObject.class)) {
             Polyline poly = ((PolylineMapObject) mapObject).getPolyline();
             stage.addActor(new MovingPlatform(world, poly.getTransformedVertices(), 1));
+        }
+    }
+
+    private void spawnMonsters(World world,Stage stage){
+        for(MapObject mapObject : mapLayers.get(MAP_LAYER_MONSTER_SPAWN_POINTS).getObjects().getByType(RectangleMapObject.class)){
+            String type = mapObject.getProperties().get(MAP_PROPERTY_MONSTER_TYPE,String.class);
+            Rectangle rectangle = ((RectangleMapObject) mapObject).getRectangle();
+            Vector2 center = new Vector2();
+            center = rectangle.getCenter(center);
+            if(type.equals(MONSTER_TYPE_WALKER)){
+                Walker walker = new Walker(center,world);
+                stage.addActor(walker);
+            }
         }
     }
 
