@@ -7,6 +7,7 @@ public class Constants {
 
     public static final float PIXEL_PER_METER = 50f;
     public static final float WORLD_GRAVITY = -10f;
+    public static final float WORLD_TIMESTEP = 1 / 30f;
 
     public static final float CAMERA_WIDTH = 30;
     public static final float CAMERA_HEIGHT = CAMERA_WIDTH * 9 / 16;

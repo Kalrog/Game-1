@@ -1,14 +1,11 @@
 package com.game.level;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
-import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.game.physics.ContactUnit;
 import com.game.util.Constants;
 import com.game.util.Helper;
@@ -16,7 +13,6 @@ import com.game.util.MoveToActionBox2D;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 
 import static com.game.util.Constants.PIXEL_PER_METER;
 
@@ -45,13 +41,13 @@ public class MovingPlatform extends Actor {
 
         for (int i = 0; i < this.vertices.length; i++) {
             actions[i] = new MoveToActionBox2D(body);
-            actions[i].setPosition(this.vertices[i].x / PIXEL_PER_METER , this.vertices[i].y / PIXEL_PER_METER);
+            actions[i].setPosition(this.vertices[i].x / PIXEL_PER_METER, this.vertices[i].y / PIXEL_PER_METER);
             actions[i].setSpeed(SPEED / PIXEL_PER_METER);
         }
         ArrayList<MoveToActionBox2D> allActions = new ArrayList<MoveToActionBox2D>();
         allActions.addAll(Arrays.asList(actions));
         //TODO add actions in reverse order to allActions
-       // Gdx.app.log("test", Arrays.toString(allActions.toArray()));
+        // Gdx.app.log("test", Arrays.toString(allActions.toArray()));
         addAction(Actions.forever(Actions.sequence(allActions.toArray(new MoveToActionBox2D[allActions.size()]))));
     }
 
@@ -67,7 +63,7 @@ public class MovingPlatform extends Actor {
     public void act(float delta) {
         super.act(delta);
         //body.setTransform(getX() + getWidth() / 2, getY() + getHeight() / 2, 0);
-        setPosition(body.getPosition().x - getWidth()/2,body.getPosition().y - getHeight()/2);
+        setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 2);
     }
 
     private Body createBody(World world) {

@@ -15,9 +15,7 @@ import com.game.physics.ContactUnit;
 import com.game.screens.GameScreen;
 import com.game.util.Constants;
 
-import static com.game.util.Constants.CATEGORY_BIT_DEATH_ZONE;
-import static com.game.util.Constants.CATEGORY_BIT_MONSTER;
-import static com.game.util.Constants.PIXEL_PER_METER;
+import static com.game.util.Constants.*;
 
 /**
  * Created by Philipp on 22.12.2016.
@@ -138,7 +136,7 @@ public class Player extends Actor {
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
             if (velocity.x < MAX_VELOCITY) {
                 facesRight = true;
-                body.applyLinearImpulse(new Vector2(MOVEMENT_IMPULSE, 0),body.getWorldCenter(), true);
+                body.applyLinearImpulse(new Vector2(MOVEMENT_IMPULSE, 0), body.getWorldCenter(), true);
                 state = State.RUNNING;
             }
         }

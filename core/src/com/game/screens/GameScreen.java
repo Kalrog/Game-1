@@ -16,6 +16,7 @@ import com.game.Game;
 import com.game.character.player.Player;
 import com.game.level.Level;
 import com.game.physics.ContactHandler;
+import com.game.util.Constants;
 
 import static com.game.util.Constants.*;
 
@@ -65,7 +66,7 @@ public class GameScreen implements Screen {
             //  fpsLogger.log();
             Gdx.gl.glClearColor(0, 0, 0, 0);
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-            world.step(1 / 30f, 6, 2);
+            world.step(Constants.WORLD_TIMESTEP, 6, 2);
             world.clearForces();
             if (Gdx.graphics.getBufferFormat().coverageSampling) {
                 Gdx.gl.glClear(GL20.GL_COVERAGE_BUFFER_BIT_NV);

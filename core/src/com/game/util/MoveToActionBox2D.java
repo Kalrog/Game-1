@@ -16,25 +16,31 @@ public class MoveToActionBox2D extends Action {
     private float endY;
     private Vector2 velocity;
     private float speed = 1f;
+    private boolean began = false;
 
     public MoveToActionBox2D(Body body) {
         this.body = body;
         if (body.getType() == BodyDef.BodyType.StaticBody)
             throw new IllegalArgumentException();
-        calculateVelocity();
+        startX = body.getPosition().x;
+        startY = body.getPosition().y;
     }
 
     @Override
     public boolean act(float delta) {
+        if (!began) {
+            calculateVelocity();
+            body.setLinearVelocity(velocity);
+            began = true;
+        }
 
-        if (Math.abs(body.getPosition().x - endX) < 0.05 * speed && Math.abs(body.getPosition().y - endY) < 0.05 * speed ) {
-            body.setLinearVelocity(0,0);
+        // This Action is done if the body will reach it's destination within one World Timestep or less
+        // this needs to be optimized because Math.hypot uses the slow squareroot function
+        if (Math.hypot(endX - body.getPosition().x, endY - body.getPosition().y) <= speed * Constants.WORLD_TIMESTEP) {
+            //body.setLinearVelocity(0,0);
             //body.setTransform(endX, endY, body.getAngle());
             return true;
         }
-
-        calculateVelocity();
-        body.setLinearVelocity(velocity);
 
         return false;
     }
@@ -42,13 +48,15 @@ public class MoveToActionBox2D extends Action {
     @Override
     public void restart() {
         super.restart();
-        body.setTransform(startX, startY, body.getAngle());
+        // adding this back into the code will make the platform reset to it's original position after it's done
+        // by teleporting instead of moving
+        //body.setTransform(startX, startY, body.getAngle());
+        began = false;
     }
 
     public void setPosition(float x, float y) {
         endX = x;
         endY = y;
-        calculateVelocity();
     }
 
     public float getX() {
@@ -57,7 +65,6 @@ public class MoveToActionBox2D extends Action {
 
     public void setX(float x) {
         endX = x;
-        calculateVelocity();
     }
 
     public float getY() {
@@ -66,18 +73,15 @@ public class MoveToActionBox2D extends Action {
 
     public void setY(float y) {
         endY = y;
-        calculateVelocity();
     }
 
     public void setSpeed(float s) {
         speed = s;
-        calculateVelocity();
     }
 
     private void calculateVelocity() {
-        startX = body.getPosition().x;
-        startY = body.getPosition().y;
-        velocity = new Vector2(endX - startX, endY - startY);
+        velocity = new Vector2(endX - body.getPosition().x, endY - body.getPosition().y);
+        // this can probably be optimized too
         velocity.setLength(speed);
     }
 }

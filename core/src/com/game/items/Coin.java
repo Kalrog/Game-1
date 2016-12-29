@@ -5,8 +5,6 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
-import static com.game.util.Constants.PIXEL_PER_METER;
-
 /**
  * Created by Philipp on 24.12.2016.
  */

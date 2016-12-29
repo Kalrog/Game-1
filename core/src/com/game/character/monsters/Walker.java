@@ -58,19 +58,19 @@ public class Walker extends Actor {
         setPosition((body.getPosition().x - getWidth() / 2), body.getPosition().y - getHeight() / 2);
         velocity = body.getLinearVelocity();
 
-        if(Math.abs(velocity.x) < MAX_VELOCITY && state == State.WALKING){
-            if(facesRight){
-                body.applyLinearImpulse(new Vector2(MOVEMENT_IMPULSE, 0),body.getWorldCenter(), true);
-            }else {
-                body.applyLinearImpulse(new Vector2(-MOVEMENT_IMPULSE, 0),body.getWorldCenter(), true);
+        if (Math.abs(velocity.x) < MAX_VELOCITY && state == State.WALKING) {
+            if (facesRight) {
+                body.applyLinearImpulse(new Vector2(MOVEMENT_IMPULSE, 0), body.getWorldCenter(), true);
+            } else {
+                body.applyLinearImpulse(new Vector2(-MOVEMENT_IMPULSE, 0), body.getWorldCenter(), true);
             }
         }
 
-        if(state == State.DEAD){
+        if (state == State.DEAD) {
             timeUntilDespawn -= delta;
         }
 
-        if(timeUntilDespawn < 0){
+        if (timeUntilDespawn < 0) {
             this.remove();
             world.destroyBody(body);
         }
@@ -131,17 +131,17 @@ public class Walker extends Actor {
 
     }
 
-    public void turnAround(){
+    public void turnAround() {
         velocity.x *= -1;
         facesRight = !facesRight;
         body.setLinearVelocity(velocity);
     }
 
-    public void die(){
+    public void die() {
         state = State.DEAD;
     }
 
-    public boolean isFacingRight(){
+    public boolean isFacingRight() {
         return facesRight;
     }
 
