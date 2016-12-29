@@ -1,5 +1,6 @@
 package com.game.character.monsters;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -55,19 +56,22 @@ public class Walker extends Actor {
     public void act(float delta) {
         super.act(delta);
         elapsedTime += delta;
-        setPosition((body.getPosition().x - getWidth() / 2), body.getPosition().y - getHeight() / 2);
-        velocity = body.getLinearVelocity();
-
-        if (Math.abs(velocity.x) < MAX_VELOCITY && state == State.WALKING) {
-            if (facesRight) {
-                body.applyLinearImpulse(new Vector2(MOVEMENT_IMPULSE, 0), body.getWorldCenter(), true);
-            } else {
-                body.applyLinearImpulse(new Vector2(-MOVEMENT_IMPULSE, 0), body.getWorldCenter(), true);
-            }
-        }
-
-        if (state == State.DEAD) {
-            timeUntilDespawn -= delta;
+        switch (state) {
+            case WALKING:
+                Gdx.app.log("test", "walking");
+                setPosition((body.getPosition().x - getWidth() / 2), body.getPosition().y - getHeight() / 2);
+                velocity = body.getLinearVelocity();
+                if (Math.abs(velocity.x) < MAX_VELOCITY) {
+                    if (facesRight) {
+                        body.applyLinearImpulse(new Vector2(MOVEMENT_IMPULSE, 0), body.getWorldCenter(), true);
+                    } else {
+                        body.applyLinearImpulse(new Vector2(-MOVEMENT_IMPULSE, 0), body.getWorldCenter(), true);
+                    }
+                }
+                break;
+            case DEAD:
+                timeUntilDespawn -= delta;
+                break;
         }
 
         if (timeUntilDespawn < 0) {
@@ -139,6 +143,9 @@ public class Walker extends Actor {
 
     public void die() {
         state = State.DEAD;
+        Filter filter = new Filter();
+        filter.maskBits = Constants.CATEGORY_BIT_NOTHING;
+        body.getFixtureList().get(0).setFilterData(filter);
     }
 
     public boolean isFacingRight() {
