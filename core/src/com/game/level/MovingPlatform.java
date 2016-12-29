@@ -36,7 +36,7 @@ public class MovingPlatform extends Actor {
         setPosition(vertices[0] / PIXEL_PER_METER, vertices[1] / PIXEL_PER_METER);
 
 
-        texture = new Texture("level/grassMid.png");
+        texture = new Texture("tiles/grassHalf.png");
         setSize(texture.getWidth() / PIXEL_PER_METER, texture.getHeight() / PIXEL_PER_METER);
 
         body = createBody(world);
@@ -80,11 +80,11 @@ public class MovingPlatform extends Actor {
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
         fixtureDef.density = 1f;
-        fixtureDef.friction = 0.2f;
+        fixtureDef.friction = 0.5f;
         fixtureDef.filter.categoryBits = Constants.CATEGORY_BIT_TERRAIN;
         fixtureDef.filter.maskBits = Constants.CATEGORY_BIT_PLAYER;
         Fixture fixture = body.createFixture(fixtureDef);
-        fixture.setUserData(new ContactUnit(ContactUnit.TERRAIN, this));
+        fixture.setUserData(new ContactUnit(ContactUnit.TERRAIN_ONE_WAY, this));
         shape.dispose();
         return body;
     }

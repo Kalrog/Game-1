@@ -29,7 +29,7 @@ public class MoveToActionBox2D extends Action {
 
         if (Math.abs(body.getPosition().x - endX) < 0.05 * speed && Math.abs(body.getPosition().y - endY) < 0.05 * speed ) {
             body.setLinearVelocity(0,0);
-            body.setTransform(endX, endY, body.getAngle());
+            //body.setTransform(endX, endY, body.getAngle());
             return true;
         }
 

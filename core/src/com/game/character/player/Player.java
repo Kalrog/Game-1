@@ -97,6 +97,7 @@ public class Player extends Actor {
     }
 
     private void handleInput() {
+        state = State.STANDING;
         //jump
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             //    Gdx.app.log("test" ," isGrounded: "+ isGrounded);
@@ -128,6 +129,7 @@ public class Player extends Actor {
             if (velocity.x > -MAX_VELOCITY) {
                 facesRight = false;
                 body.applyLinearImpulse(new Vector2(-MOVEMENT_IMPULSE, 0), body.getWorldCenter(), true);
+                state = State.RUNNING;
             }
         }
 
@@ -137,15 +139,14 @@ public class Player extends Actor {
             if (velocity.x < MAX_VELOCITY) {
                 facesRight = true;
                 body.applyLinearImpulse(new Vector2(MOVEMENT_IMPULSE, 0),body.getWorldCenter(), true);
+                state = State.RUNNING;
             }
         }
         handleState();
     }
 
     private void handleState() {
-        if (body.getLinearVelocity().x != 0) {
-            state = State.RUNNING;
-        } else {
+        if (body.getLinearVelocity().x == 0) {
             state = State.STANDING;
         }
         if (!isGrounded) {
