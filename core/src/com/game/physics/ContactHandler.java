@@ -72,7 +72,7 @@ public class ContactHandler implements ContactListener {
 
                 break;
             case PLAYER_SIDE:
-                if (otherUnit.getId() == TERRAIN || otherUnit.getId() == TERRAIN_ONE_WAY ) {
+                if (otherUnit.getId() == TERRAIN) {
                     ((Player) playerUnit.getData()).changeSideContact(1);
                 }
                 break;
@@ -123,7 +123,7 @@ public class ContactHandler implements ContactListener {
                 }
                 break;
             case PLAYER_SIDE:
-                if (otherUnit.getId() == TERRAIN || otherUnit.getId() == TERRAIN_ONE_WAY) {
+                if (otherUnit.getId() == TERRAIN) {
                     ((Player) playerUnit.getData()).changeSideContact(-1);
                 }
                 break;
