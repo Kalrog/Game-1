@@ -35,10 +35,6 @@ public class GameScreen implements Screen {
     private GameState gameState;
     private Hud hud;
 
-    enum GameState {
-        RUNNING, PAUSED
-    }
-
     public GameScreen(Game game) {
         hud = new Hud(game.getBatch());
         this.game = game;
@@ -76,7 +72,15 @@ public class GameScreen implements Screen {
             } else {
                 camera.position.x = player.getX();
             }
-            camera.position.y = player.getY() + 4.5f;
+            if (player.getY() < CAMERA_HEIGHT - ((CAMERA_HEIGHT / 2) + CAMERA_VERTICAL_OFFSET)) {
+                camera.position.y = CAMERA_HEIGHT / 2;
+            } else {
+                camera.position.y = player.getY() + Constants.CAMERA_VERTICAL_OFFSET;
+            }
+            if (player.getY() > level.getMapHeight() - CAMERA_HEIGHT / 2 - CAMERA_VERTICAL_OFFSET) {
+                Gdx.app.log("test", level.getMapHeight() + " " + player.getY());
+                camera.position.y = level.getMapHeight() - CAMERA_HEIGHT / 2;
+            }
             camera.update();
             level.setView(camera);
             debugRenderer.render(world, camera.combined);
@@ -118,5 +122,9 @@ public class GameScreen implements Screen {
         world.dispose();
         debugRenderer.dispose();
         stage.dispose();
+    }
+
+    enum GameState {
+        RUNNING, PAUSED
     }
 }

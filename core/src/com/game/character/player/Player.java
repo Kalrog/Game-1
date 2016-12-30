@@ -22,10 +22,10 @@ import static com.game.util.Constants.*;
  */
 public class Player extends Actor {
 
-    private static final float MAX_VELOCITY = 15f;
-    private static final float MOVEMENT_IMPULSE = 0.9f;
-    private static final float JUMP_IMPULSE = 900f;
-    private static final float WALL_JUMP_IMPULSE = 900f;
+    private static final float MAX_VELOCITY = 10f;
+    private static final float MOVEMENT_IMPULSE = 0.6f;
+    private static final float JUMP_IMPULSE = 600f;
+    private static final float WALL_JUMP_IMPULSE = 600f;
     private Vector2 velocity;
     private boolean facesRight = true;
     private State state;
@@ -70,6 +70,9 @@ public class Player extends Actor {
         handleInput();
         setPosition((body.getPosition().x - getWidth() / 2), body.getPosition().y - getHeight() / 2);
         velocity = body.getLinearVelocity();
+        if (getX() < 0 || getY() < 0) {
+            die();
+        }
     }
 
     @Override
@@ -208,11 +211,11 @@ public class Player extends Actor {
         return bodyDef;
     }
 
-    private enum State {
-        RUNNING, STANDING, JUMPING;
-    }
-
     public void die() {
         game.setScreen(new GameScreen(game));
+    }
+
+    private enum State {
+        RUNNING, STANDING, JUMPING;
     }
 }

@@ -195,5 +195,7 @@ public class Level {
         }
     }
 
-
+    public int getMapHeight() {
+        return mapHeight;
+    }
 }

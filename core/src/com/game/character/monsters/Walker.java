@@ -58,7 +58,6 @@ public class Walker extends Actor {
         elapsedTime += delta;
         switch (state) {
             case WALKING:
-                Gdx.app.log("test", "walking");
                 setPosition((body.getPosition().x - getWidth() / 2), body.getPosition().y - getHeight() / 2);
                 velocity = body.getLinearVelocity();
                 if (Math.abs(velocity.x) < MAX_VELOCITY) {

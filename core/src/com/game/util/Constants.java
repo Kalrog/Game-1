@@ -5,13 +5,16 @@ package com.game.util;
  */
 public class Constants {
 
-    public static final float PIXEL_PER_METER = 50f;
+    //1 tile = 1 meter
+    public static final float PIXEL_PER_METER = 70f;
+
     public static final float WORLD_GRAVITY = -10f;
     public static final float WORLD_TIMESTEP = 1 / 30f;
 
-    public static final float CAMERA_WIDTH = 30;
+    //Camera
+    public static final float CAMERA_WIDTH = 24;
     public static final float CAMERA_HEIGHT = CAMERA_WIDTH * 9 / 16;
-
+    public static final float CAMERA_VERTICAL_OFFSET=3.5f;
 
     //Collision filter category bits
     public static final short CATEGORY_BIT_NOTHING = 0;
