@@ -1,19 +1,18 @@
 package com.game.level;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.objects.EllipseMapObject;
 import com.badlogic.gdx.maps.objects.PolygonMapObject;
 import com.badlogic.gdx.maps.objects.PolylineMapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Polygon;
-import com.badlogic.gdx.math.Polyline;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.game.character.monsters.Walker;
@@ -44,7 +43,6 @@ public class Level {
     private int tileHeight;
     private int mapHeight;
     private int mapWidth;
-    private Stage stage;
 
     public Level(World world, Stage stage) {
         tiledMap = new TmxMapLoader().load("level/level1.tmx");
@@ -115,25 +113,12 @@ public class Level {
     }
 
     private void createCoins(World world, Stage stage) {
-        BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.StaticBody;
-        for (MapObject mapObject : mapLayers.get(MAP_LAYER_COINS).getObjects().getByType(RectangleMapObject.class)) {
-            Rectangle rectangle = ((RectangleMapObject) mapObject).getRectangle();
+        Gdx.app.log("test", "create coins");
 
-            bodyDef.position.set((rectangle.getX() + rectangle.getWidth() / 2) / PIXEL_PER_METER, (rectangle.getY() + rectangle.getHeight() / 2) / PIXEL_PER_METER);
-            Body body = world.createBody(bodyDef);
-            PolygonShape shape = new PolygonShape();
-            shape.setAsBox(rectangle.getWidth() / 2 / PIXEL_PER_METER, rectangle.getHeight() / 2 / PIXEL_PER_METER);
-            FixtureDef fixtureDef = new FixtureDef();
-            fixtureDef.shape = shape;
-            fixtureDef.density = 1f;
-            fixtureDef.filter.categoryBits = Constants.CATEGORY_BIT_COIN;
-            Fixture fixture = body.createFixture(fixtureDef);
-            Coin coin;
-            stage.addActor(coin = new Coin(body.getPosition().x - rectangle.getWidth() / 2 / PIXEL_PER_METER, body.getPosition().y - rectangle.getHeight() / 2 / PIXEL_PER_METER, rectangle.getWidth() / PIXEL_PER_METER, rectangle.getHeight() / PIXEL_PER_METER));
-            fixture.setUserData(new ContactUnit(ContactUnit.COIN | ContactUnit.TERRAIN, coin));
-            shape.dispose();
-
+        for (MapObject mapObject : mapLayers.get(MAP_LAYER_COINS).getObjects().getByType(EllipseMapObject.class)) {
+            Gdx.app.log("test", "for");
+            Ellipse ellipse = ((EllipseMapObject) mapObject).getEllipse();
+           stage.addActor(new Coin(world, ellipse));
         }
     }
 

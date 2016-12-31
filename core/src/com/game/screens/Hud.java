@@ -16,7 +16,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
  */
 public class Hud implements Disposable {
 
-    public Stage stage;
+    private Stage stage;
     private Viewport viewport;
 
     private Label testLabel;
@@ -37,5 +37,9 @@ public class Hud implements Disposable {
     @Override
     public void dispose() {
         stage.dispose();
+    }
+
+    public Stage getStage() {
+        return stage;
     }
 }

@@ -36,6 +36,7 @@ public class MoveToActionBox2D extends Action {
 
         // This Action is done if the body will reach it's destination within one World Timestep or less
         // this needs to be optimized because Math.hypot uses the slow squareroot function
+        //TODO
         if (Math.hypot(endX - body.getPosition().x, endY - body.getPosition().y) <= speed * Constants.WORLD_TIMESTEP) {
             //body.setLinearVelocity(0,0);
             //body.setTransform(endX, endY, body.getAngle());

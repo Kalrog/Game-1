@@ -58,6 +58,12 @@ public class ContactHandler implements ContactListener {
                 if (otherUnit.getId() == DEATH_ZONE) {
                     ((Player) playerUnit.getData()).die();
                 }
+                //Player collides with monster
+                if (otherUnit.getId() == MONSTER) {
+                    if (otherUnit.getData().getClass() == Walker.class) {
+                        ((Player) playerUnit.getData()).die();
+                    }
+                }
                 break;
             case PLAYER_FOOT:
                 if (otherUnit.getId() == TERRAIN || otherUnit.getId() == TERRAIN_ONE_WAY || otherUnit.getId() == MONSTER) {

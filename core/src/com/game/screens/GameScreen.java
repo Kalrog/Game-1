@@ -59,7 +59,6 @@ public class GameScreen implements Screen {
             Gdx.app.exit();
         }
         if (gameState == GameState.RUNNING) {
-            //  fpsLogger.log();
             Gdx.gl.glClearColor(0, 0, 0, 0);
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
             world.step(Constants.WORLD_TIMESTEP, 6, 2);
@@ -78,7 +77,6 @@ public class GameScreen implements Screen {
                 camera.position.y = player.getY() + Constants.CAMERA_VERTICAL_OFFSET;
             }
             if (player.getY() > level.getMapHeight() - CAMERA_HEIGHT / 2 - CAMERA_VERTICAL_OFFSET) {
-                Gdx.app.log("test", level.getMapHeight() + " " + player.getY());
                 camera.position.y = level.getMapHeight() - CAMERA_HEIGHT / 2;
             }
             camera.update();
@@ -86,9 +84,11 @@ public class GameScreen implements Screen {
             debugRenderer.render(world, camera.combined);
             stage.act();
             stage.draw();
-            game.getBatch().setProjectionMatrix(hud.stage.getCamera().combined);
-            hud.stage.draw();
-            fpsLogger.log();
+
+            //render hud
+            game.getBatch().setProjectionMatrix(hud.getStage().getCamera().combined);
+            hud.getStage().draw();
+            //   fpsLogger.log();
         }
     }
 
